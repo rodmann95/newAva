@@ -28,12 +28,12 @@
     "tailwind-merge": "^3.3.0"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
-    "@types/qrcode": "^1.5.7",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
