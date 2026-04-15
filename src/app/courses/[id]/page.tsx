@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getCourseCurriculum } from "@/features/courses/student-actions";
 import { EnrollButton } from "@/features/courses/components/EnrollButton";
 import { Navbar } from "@/components/navbar";

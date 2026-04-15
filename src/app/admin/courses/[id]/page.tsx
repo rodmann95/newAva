@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getCourseWithDetails } from "@/features/courses/actions";
 import { CourseEditor } from "@/features/courses/components/CourseEditor";
 import { PublishToggle } from "@/features/courses/components/PublishToggle";
