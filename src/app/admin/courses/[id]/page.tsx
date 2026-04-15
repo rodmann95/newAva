@@ -1,18 +1,29 @@
-export const dynamic = 'force-dynamic';
-
 import { getCourseWithDetails } from "@/features/courses/actions";
 import { CourseEditor } from "@/features/courses/components/CourseEditor";
 import { PublishToggle } from "@/features/courses/components/PublishToggle";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 interface CourseEditorPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function CourseEditorPage({ params }: CourseEditorPageProps) {
+export default function CourseEditorPage({ params }: CourseEditorPageProps) {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <CourseEditorContent params={params} />
+    </Suspense>
+  );
+}
+
+async function CourseEditorContent({ params }: CourseEditorPageProps) {
   const { id } = await params;
   const { data: course, error } = await getCourseWithDetails(id);
 

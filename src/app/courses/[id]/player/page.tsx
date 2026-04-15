@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { getCourseWithDetails } from "@/features/courses/actions";
 import { CoursePlayer } from "@/features/courses/components/CoursePlayer";
 import { createClient } from "@/lib/supabase/server";

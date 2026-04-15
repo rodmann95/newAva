@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { getCourseCurriculum } from "@/features/courses/student-actions";
 import { EnrollButton } from "@/features/courses/components/EnrollButton";
 import { Navbar } from "@/components/navbar";
@@ -10,16 +8,30 @@ import {
   PlayCircleIcon, 
   FileTextIcon,
   ClockIcon,
-  LayersIcon
+  LayersIcon,
+  Loader2Icon
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 interface CoursePreviewPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function CoursePreviewPage({ params }: CoursePreviewPageProps) {
+export default function CoursePreviewPage({ params }: CoursePreviewPageProps) {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen bg-slate-50">
+        <Loader2Icon className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <CoursePreviewContent params={params} />
+    </Suspense>
+  );
+}
+
+async function CoursePreviewContent({ params }: CoursePreviewPageProps) {
   const { id } = await params;
   const { data, error } = await getCourseCurriculum(id);
 
