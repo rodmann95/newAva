@@ -118,7 +118,7 @@ export async function getStudentDashboard() {
 
   // Calculate progress for each course
   const coursesWithProgress = await Promise.all(
-    data.map(async (item: any) => {
+    (data || []).map(async (item: any) => {
       const course = item.courses;
       
       // Get total lessons in this course

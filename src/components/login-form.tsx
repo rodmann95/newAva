@@ -38,10 +38,13 @@ export function LoginForm({
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
+      
+      console.log("Login successful! Redirecting...");
+      router.refresh(); // Força o reinício do cache da rota no Next.js
       router.push("/dashboard");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+    } catch (error: any) {
+      console.error("Login Error:", error);
+      setError(error?.message || "Erro desconhecido ao logar");
     } finally {
       setIsLoading(false);
     }
