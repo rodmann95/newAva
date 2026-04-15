@@ -35,7 +35,11 @@ async function PlayerContent({ params }: { params: Promise<{ id: string }> }) {
   const { data: course, error } = await getCourseWithDetails(id);
 
   if (!course || error) {
-    return notFound();
+    return (
+      <div className="flex flex-col items-center justify-center h-full space-y-4">
+        <h2 className="text-2xl font-bold">Conteúdo não encontrado</h2>
+      </div>
+    );
   }
 
   const { data: progress } = await supabase

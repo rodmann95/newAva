@@ -28,7 +28,12 @@ async function CourseEditorContent({ params }: CourseEditorPageProps) {
   const { data: course, error } = await getCourseWithDetails(id);
 
   if (!course || error) {
-    return notFound();
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <h2 className="text-2xl font-bold">Curso não encontrado</h2>
+        <Button asChild><Link href="/admin/courses">Voltar</Link></Button>
+      </div>
+    );
   }
 
   return (

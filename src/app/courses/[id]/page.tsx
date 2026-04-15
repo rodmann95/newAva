@@ -35,7 +35,16 @@ async function CoursePreviewContent({ params }: CoursePreviewPageProps) {
   const { id } = await params;
   const { data, error } = await getCourseCurriculum(id);
 
-  if (!data || error) return notFound();
+  if (!data || error) {
+    return (
+      <div className="flex flex-col flex-1 items-center justify-center min-h-[50vh] p-8 text-center space-y-4">
+        <BookOpenIcon className="h-16 w-16 text-slate-300 mx-auto" />
+        <h2 className="text-2xl font-bold text-slate-700">Curso não encontrado</h2>
+        <p className="text-slate-500">Este curso pode não existir ou não estar mais disponível para matrícula.</p>
+        <Button asChild className="mt-4"><Link href="/dashboard">Voltar ao painel</Link></Button>
+      </div>
+    );
+  }
 
   const { course, curriculum } = data;
   const totalLessons = curriculum.reduce((acc, mod) => acc + mod.lessons.length, 0);
