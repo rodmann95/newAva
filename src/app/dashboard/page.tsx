@@ -1,11 +1,12 @@
-import { getStudentDashboard, getAvailableCourses } from "@/features/courses/student-actions";
+import { getStudentDashboard, getAvailableCourses, getStudentProfile } from "@/features/courses/student-actions";
+import { getStudentCertificates } from "@/features/certificates/actions";
 import { AnnouncementBanner } from "@/features/courses/components/AnnouncementBanner";
 import { DownloadCertificate } from "@/features/certificates/components/DownloadCertificate";
 import { EnrollButton } from "@/features/courses/components/EnrollButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { BookOpenIcon, LayoutDashboardIcon, CalendarIcon, Loader2Icon, PlusIcon } from "lucide-react";
+import { BookOpenIcon, LayoutDashboardIcon, CalendarIcon, Loader2Icon, PlusIcon, AwardIcon, LandmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Suspense } from "react";
@@ -36,7 +37,7 @@ export default function StudentDashboardPage() {
         <Suspense fallback={
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Carregando seus cursos...</p>
+            <p className="text-sm text-muted-foreground">Carregando seu progresso...</p>
           </div>
         }>
           <DashboardContent />
@@ -48,9 +49,16 @@ export default function StudentDashboardPage() {
 
 async function DashboardContent() {
   try {
-    const [{ data: enrolledCourses, error: enrolledError }, { data: availableCourses, error: availableError }] = await Promise.all([
+    const [
+      { data: enrolledCourses, error: enrolledError }, 
+      { data: availableCourses, error: availableError },
+      { data: profile },
+      { data: certificates }
+    ] = await Promise.all([
       getStudentDashboard(),
-      getAvailableCourses()
+      getAvailableCourses(),
+      getStudentProfile(),
+      getStudentCertificates()
     ]);
 
     const error = enrolledError || availableError;
@@ -63,18 +71,27 @@ async function DashboardContent() {
           </div>
         )}
 
+        {/* Profile Info & Institution */}
+        <div className="flex flex-wrap gap-4">
+          <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 text-sm font-medium">
+            <LandmarkIcon className="h-4 w-4" />
+            Prefeitura: <span className="font-bold">{profile?.institutions?.name || "Sem Vínculo"}</span>
+          </div>
+          {certificates && certificates.length > 0 && (
+            <div className="flex items-center gap-3 bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl border border-yellow-100 text-sm font-medium">
+              <AwardIcon className="h-4 w-4" />
+              Certificados Conquistados: <span className="font-bold">{certificates.length}</span>
+            </div>
+          )}
+        </div>
+
         {/* Meus Cursos Section */}
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800" id="cursos">
               <BookOpenIcon className="h-5 w-5 text-primary" />
-              Meus Cursos
+              Cursos em Andamento
             </h2>
-            {enrolledCourses && enrolledCourses.length > 0 && (
-              <span className="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                {enrolledCourses.length} curso(s) em andamento
-              </span>
-            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -101,12 +118,12 @@ async function DashboardContent() {
                       <DownloadCertificate 
                         courseId={course.id} 
                         courseTitle={course.title}
-                        userName="Servidor Público"
+                        userName={profile?.full_name || "Aluno"}
                       />
                     ) : (
                       <Button className="w-full" asChild>
                         <Link href={`/courses/${course.id}/player`}>
-                          Acessar Curso
+                          Continuar Estudos
                         </Link>
                       </Button>
                     )}
@@ -117,13 +134,37 @@ async function DashboardContent() {
               <div className="md:col-span-3 py-20 text-center space-y-4 bg-white rounded-2xl border-2 border-dashed border-slate-200">
                 <LayoutDashboardIcon className="h-12 w-12 text-slate-300 mx-auto" />
                 <h3 className="text-lg font-medium text-slate-900">Nenhum curso iniciado</h3>
-                <p className="text-slate-500 max-w-md mx-auto">
-                  Você ainda não começou nenhuma capacitação. Explore o catálogo abaixo para se matricular!
-                </p>
               </div>
             )}
           </div>
         </section>
+
+        {/* Certificates Section */}
+        {certificates && certificates.length > 0 && (
+          <section className="space-y-6 pt-10 border-t">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+              <AwardIcon className="h-5 w-5 text-yellow-600" />
+              Minha Galeria de Certificados
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {certificates.map((cert: any) => (
+                <Card key={cert.id} className="bg-slate-50 border-slate-200">
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm">{cert.courses?.title}</CardTitle>
+                    <CardDescription className="text-[10px]">Emitido em {new Date(cert.created_at).toLocaleDateString()}</CardDescription>
+                  </CardHeader>
+                  <CardFooter className="p-4 pt-0">
+                    <DownloadCertificate 
+                      courseId={cert.course_id} 
+                      courseTitle={cert.courses?.title} 
+                      userName={profile?.full_name || "Aluno"} 
+                    />
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Catalog Section */}
         {availableCourses && availableCourses.length > 0 && (
@@ -131,18 +172,13 @@ async function DashboardContent() {
             <div className="space-y-1">
               <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-700">
                 <PlusIcon className="h-6 w-6" />
-                Catálogo de Capacitação
+                Novas Capacitações Disponíveis
               </h2>
-              <p className="text-slate-500">Selecione novos cursos e trilhas de aprendizado disponíveis para você.</p>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {availableCourses.map((course) => (
                 <Card key={course.id} className="flex flex-col border-slate-200 bg-white/50 hover:bg-white hover:shadow-lg transition-all border-l-4 border-l-blue-500">
                   <CardHeader>
-                    <div className="bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded w-fit mb-2">
-                      Disponível
-                    </div>
                     <CardTitle className="text-xl text-slate-900">{course.title}</CardTitle>
                     <CardDescription className="line-clamp-3 text-slate-600">
                       {course.description || "Sem descrição disponível."}
@@ -151,7 +187,7 @@ async function DashboardContent() {
                   <CardFooter className="mt-auto pt-6 flex flex-col gap-2">
                     <Button variant="outline" className="w-full" asChild>
                       <Link href={`/courses/${course.id}`}>
-                        Ver Módulos e Aulas
+                        Ver Detalhes
                       </Link>
                     </Button>
                     <EnrollButton courseId={course.id} />
@@ -168,7 +204,6 @@ async function DashboardContent() {
     return (
       <div className="py-20 text-center space-y-4">
         <h2 className="text-xl font-bold text-red-600">Erro ao carregar o dashboard</h2>
-        <p className="text-slate-600">Ocorreu um problema inesperado ao processar os dados do servidor.</p>
         <Button asChild variant="outline">
           <Link href="/dashboard">Tentar Recarregar</Link>
         </Button>

@@ -81,3 +81,42 @@ export async function issueCertificate(courseId: string) {
   revalidatePath("/dashboard");
   return { data };
 }
+
+/**
+ * Fetches all certificates for the current user
+ */
+export async function getStudentCertificates() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { data: [], error: "Não autenticado" };
+
+  const { data, error } = await supabase
+    .from("certificates")
+    .select(`
+      *,
+      courses ( title )
+    `)
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) return { data: [], error: error.message };
+  return { data, error: null };
+}
+
+/**
+ * Fetches all certificates for admin view
+ */
+export async function getAllCertificates() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("certificates")
+    .select(`
+      *,
+      courses ( title ),
+      profiles:user_id ( full_name )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) return { data: [], error: error.message };
+  return { data, error: null };
+}

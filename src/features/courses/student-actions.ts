@@ -251,3 +251,24 @@ export async function enrollInCourse(courseId: string) {
   revalidatePath("/dashboard");
   return { error: null };
 }
+
+/**
+ * Gets student profile with institution name
+ */
+export async function getStudentProfile() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { data: null };
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select(`
+      *,
+      institutions ( name )
+    `)
+    .eq("id", user.id)
+    .single();
+
+  if (error) return { data: null, error: error.message };
+  return { data, error: null };
+}

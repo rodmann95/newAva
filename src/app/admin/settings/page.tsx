@@ -1,10 +1,70 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SettingsIcon, SaveIcon } from "lucide-react";
+import { SettingsIcon, SaveIcon, Loader2Icon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import { updateInstitutionSettings } from "@/features/institutions/actions";
 
 export default function SettingsPage() {
+  const [institution, setInstitution] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("institution_id")
+        .eq("id", user.id)
+        .single();
+
+      if (profile?.institution_id) {
+        const { data: inst } = await supabase
+          .from("institutions")
+          .select("*")
+          .eq("id", profile.institution_id)
+          .single();
+        
+        setInstitution(inst);
+      }
+      setIsLoading(false);
+    }
+    fetchSettings();
+  }, []);
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (!institution) return;
+
+    setIsSaving(true);
+    const { error } = await updateInstitutionSettings(institution.id, institution);
+
+    if (!error) {
+      toast.success("Configurações atualizadas com sucesso!");
+    } else {
+      toast.error("Erro ao salvar: " + error);
+    }
+    setIsSaving(false);
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm text-slate-500">Carregando configurações...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -15,7 +75,7 @@ export default function SettingsPage() {
         <SettingsIcon className="h-8 w-8 text-slate-300" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card className="border-none shadow-sm">
           <CardHeader>
             <CardTitle>Identidade Visual</CardTitle>
@@ -23,60 +83,21 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Nome da Plataforma</Label>
-              <Input id="name" defaultValue="AVA GovTech" />
+              <Label htmlFor="name">Nome da Instituição</Label>
+              <Input 
+                id="name" 
+                value={institution?.name || ""} 
+                onChange={(e) => setInstitution({ ...institution, name: e.target.value })}
+              />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="logo">URL da Logomarca (PNG/SVG)</Label>
-              <Input id="logo" placeholder="https://exemplo.com/logo.png" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="primary">Cor Primária</Label>
-                <div className="flex gap-2">
-                  <Input id="primary" type="color" className="w-12 p-1" defaultValue="#2563eb" />
-                  <Input defaultValue="#2563eb" className="font-mono text-xs" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="secondary">Cor Secundária</Label>
-                <div className="flex gap-2">
-                  <Input id="secondary" type="color" className="w-12 p-1" defaultValue="#64748b" />
-                  <Input defaultValue="#64748b" className="font-mono text-xs" />
-                </div>
-              </div>
-            </div>
-            <Button className="w-full gap-2">
-              <SaveIcon className="h-4 w-4" />
-              Salvar Alterações Visual
+            {/* Outros campos de visual e regras podem ser adicionados aqui se a tabela suportar */}
+            <Button type="submit" className="w-full gap-2" disabled={isSaving}>
+              {isSaving ? <Loader2Icon className="h-4 w-4 animate-spin" /> : <SaveIcon className="h-4 w-4" />}
+              Salvar Alterações
             </Button>
           </CardContent>
         </Card>
-
-        <Card className="border-none shadow-sm">
-          <CardHeader>
-            <CardTitle>Certificação & Provas</CardTitle>
-            <CardDescription>Regras globais para emissão de certificados.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="min-score">Nota Mínima para Aprovação (%)</Label>
-              <Input id="min-score" type="number" defaultValue="70" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="attempts">Limite de Tentativas por Prova</Label>
-              <Input id="attempts" type="number" defaultValue="3" />
-            </div>
-            <div className="flex items-center gap-2 p-4 bg-blue-50 text-blue-700 rounded-xl text-sm border border-blue-100 italic">
-               Dica: Notas acima de 70% aumentam a credibilidade da certificação pública.
-            </div>
-            <Button variant="outline" className="w-full gap-2 border-slate-200">
-              <SaveIcon className="h-4 w-4" />
-              Atualizar Regras Educacionais
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      </form>
     </div>
   );
 }

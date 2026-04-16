@@ -16,6 +16,7 @@ export async function getUsers() {
       id,
       full_name,
       role,
+      institution_id,
       updated_at
     `)
     .order("full_name", { ascending: true });
@@ -25,8 +26,6 @@ export async function getUsers() {
     return { data: null, error: error.message };
   }
 
-  // Note: We can't easily fetch email from auth.users on the client due to security.
-  // Ideally, this should be done in a Server Action using the Service Role or a custom RPC.
   return { data, error: null };
 }
 
@@ -44,10 +43,24 @@ export async function updateUserRole(userId: string, newRole: string) {
     })
     .eq("id", userId);
 
-  if (error) {
-    console.error("Error updating user role:", error);
-    return { error: error.message };
-  }
+  if (error) return { error: error.message };
+  return { error: null };
+}
 
+/**
+ * Update a user's institution.
+ */
+export async function updateUserInstitution(userId: string, institutionId: string) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ 
+      institution_id: institutionId,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", userId);
+
+  if (error) return { error: error.message };
   return { error: null };
 }
