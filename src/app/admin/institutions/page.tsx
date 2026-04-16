@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { getInstitutions, createInstitution, updateInstitutionSettings } from "@/features/institutions/actions";
@@ -15,10 +15,10 @@ import {
   LandmarkIcon, 
   Loader2Icon, 
   PlusIcon, 
-  Settings2Icon, 
-  GlobeIcon, 
-  PaletteIcon,
-  SaveIcon
+  Settings2, 
+  Globe, 
+  Palette,
+  Save
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -177,7 +177,7 @@ export default function InstitutionsManagementPage() {
                           setSelectedInst({ ...inst, brand_colors: colors });
                         }}
                       >
-                        <Settings2Icon className="h-3 w-3" />
+                        <Settings2 className="h-3 w-3" />
                         Configurar Estética
                       </Button>
                     </TableCell>
@@ -200,7 +200,7 @@ export default function InstitutionsManagementPage() {
           <div className="space-y-8 text-sm pb-20">
             <div className="space-y-4">
               <h3 className="font-bold flex items-center gap-2 text-blue-600 border-b pb-2">
-                <GlobeIcon className="h-4 w-4" />
+                <Globe className="h-4 w-4" />
                 Domínio e Marca
               </h3>
               <div className="space-y-2">
@@ -233,7 +233,7 @@ export default function InstitutionsManagementPage() {
 
             <div className="space-y-4">
               <h3 className="font-bold flex items-center gap-2 text-purple-600 border-b pb-2">
-                <PaletteIcon className="h-4 w-4" />
+                <Palette className="h-4 w-4" />
                 Paleta de Cores
               </h3>
               <div className="grid grid-cols-2 gap-4">
@@ -271,7 +271,7 @@ export default function InstitutionsManagementPage() {
             </div>
 
             <Button className="w-full gap-2" size="lg" onClick={handleUpdate} disabled={isSaving}>
-              {isSaving ? <Loader2Icon className="h-4 w-4 animate-spin" /> : <SaveIcon className="h-4 w-4" />}
+              {isSaving ? <Loader2Icon className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               Salvar Alterações na Instituição
             </Button>
           </div>
