@@ -144,47 +144,49 @@ export default function InstitutionsManagementPage() {
               <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Identificador</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {institutions.map((inst) => (
-                  <TableRow key={inst.id} className="group">
-                    <TableCell className="font-semibold text-slate-700">
-                      <div className="flex items-center gap-2">
-                        <LandmarkIcon className="h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
-                        {inst.name}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-[10px] text-slate-400">
-                      {inst.id}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="gap-2 text-xs"
-                        onClick={() => {
-                          let colors = inst.brand_colors || { primary: "#000000", secondary: "#ffffff" };
-                          if (typeof colors === 'string') {
-                            try { colors = JSON.parse(colors); } catch(e) {}
-                          }
-                          setSelectedInst({ ...inst, brand_colors: colors });
-                        }}
-                      >
-                        <Settings2 className="h-3 w-3" />
-                        Configurar Estética
-                      </Button>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Nome</TableHead>
+                    <TableHead className="whitespace-nowrap">Identificador</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">Ações</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {institutions.map((inst) => (
+                    <TableRow key={inst.id} className="group">
+                      <TableCell className="font-semibold text-slate-700 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <LandmarkIcon className="h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                          {inst.name}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-mono text-[10px] text-slate-400 whitespace-nowrap">
+                        {inst.id}
+                      </TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="gap-2 text-xs"
+                          onClick={() => {
+                            let colors = inst.brand_colors || { primary: "#000000", secondary: "#ffffff" };
+                            if (typeof colors === 'string') {
+                              try { colors = JSON.parse(colors); } catch(e) {}
+                            }
+                            setSelectedInst({ ...inst, brand_colors: colors });
+                          }}
+                        >
+                          <Settings2 className="h-3 w-3" />
+                          Configurar Estética
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

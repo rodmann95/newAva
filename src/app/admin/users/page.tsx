@@ -89,63 +89,65 @@ export default function UsersManagementPage() {
               <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Vínculo (Instituição)</TableHead>
-                  <TableHead>Cargo</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="font-medium">
-                      {user.full_name || "Sem nome"}
-                    </TableCell>
-                    <TableCell>
-                      <Select 
-                        defaultValue={user.institution_id || undefined} 
-                        onValueChange={(val) => handleInstitutionChange(user.id, val)}
-                      >
-                        <SelectTrigger className="w-[180px] h-8 text-xs">
-                          <SelectValue placeholder="Sem Instituição" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {institutions.map(i => (
-                            <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell>{getRoleBadge(user.role)}</TableCell>
-                    <TableCell className="text-right">
-                      <Select 
-                        defaultValue={user.role} 
-                        onValueChange={(val) => handleRoleChange(user.id, val)}
-                      >
-                        <SelectTrigger className="w-[100px] h-8 ml-auto text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="student">Aluno</SelectItem>
-                          <SelectItem value="professor">Prof</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {users.length === 0 && (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center text-slate-500">
-                      Nenhum usuário encontrado.
-                    </TableCell>
+                    <TableHead className="whitespace-nowrap">Nome</TableHead>
+                    <TableHead className="whitespace-nowrap">Vínculo (Instituição)</TableHead>
+                    <TableHead className="whitespace-nowrap">Cargo</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">Ações</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium whitespace-nowrap">
+                        {user.full_name || "Sem nome"}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Select 
+                          defaultValue={user.institution_id || undefined} 
+                          onValueChange={(val) => handleInstitutionChange(user.id, val)}
+                        >
+                          <SelectTrigger className="w-[180px] h-8 text-xs">
+                            <SelectValue placeholder="Sem Instituição" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {institutions.map(i => (
+                              <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">{getRoleBadge(user.role)}</TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <Select 
+                          defaultValue={user.role} 
+                          onValueChange={(val) => handleRoleChange(user.id, val)}
+                        >
+                          <SelectTrigger className="w-[100px] h-8 ml-auto text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="student">Aluno</SelectItem>
+                            <SelectItem value="professor">Prof</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {users.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="h-24 text-center text-slate-500">
+                        Nenhum usuário encontrado.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>
