@@ -26,15 +26,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isMissingEnv = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
+          {isMissingEnv && (
+            <div className="bg-red-600 text-white text-[10px] py-1 px-4 text-center sticky top-0 z-[100] font-mono">
+              ⚠️ ATENÇÃO: Variáveis do Supabase não detectadas. Verifique o Config Vars do Heroku e faça um REDEPLOY.
+            </div>
+          )}
           {children}
           <Toaster position="top-right" richColors />
         </ThemeProvider>
