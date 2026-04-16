@@ -45,7 +45,7 @@ export default async function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalStudents}</div>
-            <p className="text-xs text-muted-foreground">Cadastrados na Prefeitura</p>
+            <p className="text-xs text-muted-foreground">Cadastrados na Instituição</p>
           </CardContent>
         </Card>
 

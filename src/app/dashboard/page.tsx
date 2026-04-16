@@ -1,4 +1,4 @@
-import { getStudentDashboard, getAvailableCourses, getStudentProfile } from "@/features/courses/student-actions";
+﻿import { getStudentDashboard, getAvailableCourses, getStudentProfile } from "@/features/courses/student-actions";
 import { getStudentCertificates } from "@/features/certificates/actions";
 import { AnnouncementBanner } from "@/features/courses/components/AnnouncementBanner";
 import { DownloadCertificate } from "@/features/certificates/components/DownloadCertificate";
@@ -67,7 +67,7 @@ async function DashboardContent() {
       <div className="space-y-12 pb-20">
         {error && (
           <div className="bg-destructive/15 text-destructive p-4 rounded-md border border-destructive/20 text-sm font-medium">
-            Atenção: {error}
+            AtenÃ§Ã£o: {error}
           </div>
         )}
 
@@ -75,7 +75,7 @@ async function DashboardContent() {
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 text-sm font-medium">
             <LandmarkIcon className="h-4 w-4" />
-            Prefeitura: <span className="font-bold">{profile?.institutions?.name || "Sem Vínculo"}</span>
+            Instituição: <span className="font-bold">{profile?.institutions?.name || "Sem VÃ­nculo"}</span>
           </div>
           {certificates && certificates.length > 0 && (
             <div className="flex items-center gap-3 bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl border border-yellow-100 text-sm font-medium">
@@ -101,7 +101,7 @@ async function DashboardContent() {
                   <CardHeader>
                     <CardTitle className="text-lg">{course.title}</CardTitle>
                     <CardDescription className="line-clamp-2">
-                      {course.description || "Sem descrição disponível."}
+                      {course.description || "Sem descriÃ§Ã£o disponÃ­vel."}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 space-y-4">
@@ -165,7 +165,7 @@ async function DashboardContent() {
             </div>
           ) : (
             <div className="bg-white border text-center py-10 rounded-xl text-slate-400 text-sm italic">
-              Você ainda não possui certificados disponíveis.
+              VocÃª ainda nÃ£o possui certificados disponÃ­veis.
             </div>
           )}
         </section>
@@ -175,7 +175,7 @@ async function DashboardContent() {
           <div className="space-y-1">
             <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-700">
               <PlusIcon className="h-6 w-6" />
-              Novas Capacitações Disponíveis
+              Novas CapacitaÃ§Ãµes DisponÃ­veis
             </h2>
           </div>
           {availableCourses && availableCourses.length > 0 ? (
@@ -185,7 +185,7 @@ async function DashboardContent() {
                   <CardHeader>
                     <CardTitle className="text-xl text-slate-900">{course.title}</CardTitle>
                     <CardDescription className="line-clamp-3 text-slate-600">
-                      {course.description || "Sem descrição disponível."}
+                      {course.description || "Sem descriÃ§Ã£o disponÃ­vel."}
                     </CardDescription>
                   </CardHeader>
                   <CardFooter className="mt-auto pt-6 flex flex-col gap-2">
@@ -201,7 +201,7 @@ async function DashboardContent() {
             </div>
           ) : (
             <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl text-center text-blue-600 font-medium italic">
-              🚀 Você já está inscrito em todos os cursos disponíveis para sua prefeitura!
+              ðŸš€ VocÃª jÃ¡ estÃ¡ inscrito em todos os cursos disponÃ­veis para sua instituição!
             </div>
           )}
         </section>

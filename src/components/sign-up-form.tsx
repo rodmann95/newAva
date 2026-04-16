@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -54,14 +54,14 @@ export function SignUpForm({
 
     if (password !== repeatPassword) {
       setError("Passwords do not match");
-      toast.error("As senhas não conferem!");
+      toast.error("As senhas nÃ£o conferem!");
       setIsLoading(false);
       return;
     }
 
     if (!institutionId) {
-      setError("Selecione sua instituição");
-      toast.error("Selecione sua prefeitura/instituição!");
+      setError("Selecione sua instituiÃ§Ã£o");
+      toast.error("Selecione sua instituição/instituiÃ§Ã£o!");
       setIsLoading(false);
       return;
     }
@@ -83,7 +83,7 @@ export function SignUpForm({
         throw error;
       }
       
-      toast.success("Cadastro realizado! Verifique seu e-mail ou faça login.");
+      toast.success("Cadastro realizado! Verifique seu e-mail ou faÃ§a login.");
       router.push("/auth/sign-up-success");
     } catch (error: any) {
       setError(error?.message || "Erro desconhecido ao cadastrar");
@@ -97,16 +97,16 @@ export function SignUpForm({
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Cadastro de Aluno</CardTitle>
-          <CardDescription>Crie sua conta para acessar os cursos da sua prefeitura.</CardDescription>
+          <CardDescription>Crie sua conta para acessar os cursos da sua instituição.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="institution">Instituição / Prefeitura</Label>
+                <Label htmlFor="institution">InstituiÃ§Ã£o / Instituição</Label>
                 <Select onValueChange={setInstitutionId} required>
                   <SelectTrigger id="institution">
-                    <SelectValue placeholder="Selecione sua prefeitura" />
+                    <SelectValue placeholder="Selecione sua instituição" />
                   </SelectTrigger>
                   <SelectContent>
                     {institutions.map((inst) => (
@@ -155,7 +155,7 @@ export function SignUpForm({
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Já tem uma conta?{" "}
+              JÃ¡ tem uma conta?{" "}
               <Link href="/auth/login" className="underline underline-offset-4 text-primary">
                 Fazer Login
               </Link>
