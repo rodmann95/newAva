@@ -21,9 +21,11 @@ import {
   CheckCircle2Icon, 
   ChevronLeftIcon,
   MenuIcon,
-  TrophyIcon
+  TrophyIcon,
+  XIcon
 } from "lucide-react";
 import Link from "next/link";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface CoursePlayerProps {
   course: CourseWithModules;
@@ -53,87 +55,103 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
       setQuizQuestions(data);
       setActiveQuizModuleId(moduleId);
     } else {
-      // Show empty state instead of crashing
       setQuizQuestions([]);
       setActiveQuizModuleId(moduleId);
     }
   };
 
-  return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      {/* Sidebar de Navegação */}
-      <aside 
-        className={`${
-          isSidebarOpen ? "w-80" : "w-0"
-        } transition-all duration-300 border-r bg-muted/30 flex flex-col shrink-0`}
-      >
-        <div className="p-4 border-b flex items-center justify-between bg-background">
-          <Link href="/dashboard" className="flex items-center gap-2 text-sm font-semibold hover:text-primary">
-            <ChevronLeftIcon className="h-4 w-4" />
-            Voltar ao Dashboard
-          </Link>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto p-2">
-          <Accordion type="multiple" defaultValue={course.modules.map(m => m.id)} className="w-full">
-            {course.modules.map((module) => (
-              <AccordionItem key={module.id} value={module.id} className="border-none">
-                <AccordionTrigger className="px-3 py-2 hover:bg-muted rounded-md text-sm font-bold no-underline hover:no-underline">
-                  {module.title}
-                </AccordionTrigger>
-                <AccordionContent className="pt-1 pb-2">
-                  <div className="space-y-1">
-                    {module.lessons.map((lesson) => (
-                      <button
-                        key={lesson.id}
-                        onClick={() => {
-                          setActiveLesson(lesson);
-                          setActiveQuizModuleId(null);
-                        }}
-                        className={`w-full flex items-center gap-3 px-4 py-2 text-xs font-medium rounded-md transition-colors text-left ${
-                          activeLesson?.id === lesson.id 
-                            ? "bg-primary text-primary-foreground shadow-md" 
-                            : "hover:bg-muted"
-                        }`}
-                      >
-                        {isCompleted(lesson.id) ? (
-                          <CheckCircle2Icon className="h-4 w-4 text-green-500 shrink-0" />
-                        ) : lesson.content_type === 'video' ? (
-                          <PlayCircleIcon className="h-4 w-4 shrink-0" />
-                        ) : (
-                          <FileTextIcon className="h-4 w-4 shrink-0" />
-                        )}
-                        <span className="truncate">{lesson.title}</span>
-                      </button>
-                    ))}
-
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className={`w-full mt-2 text-xs h-8 border-dashed ${activeQuizModuleId === module.id ? "bg-primary text-primary-foreground" : ""}`}
-                      onClick={() => startQuiz(module.id)}
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-4 border-b flex items-center justify-between">
+        <Link href="/dashboard" className="flex items-center gap-2 text-sm font-semibold hover:text-primary">
+          <ChevronLeftIcon className="h-4 w-4" />
+          Voltar ao Dashboard
+        </Link>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto p-2">
+        <Accordion type="multiple" defaultValue={course.modules.map(m => m.id)} className="w-full">
+          {course.modules.map((module) => (
+            <AccordionItem key={module.id} value={module.id} className="border-none">
+              <AccordionTrigger className="px-3 py-2 hover:bg-muted rounded-md text-sm font-bold no-underline hover:no-underline">
+                {module.title}
+              </AccordionTrigger>
+              <AccordionContent className="pt-1 pb-2">
+                <div className="space-y-1">
+                  {module.lessons.map((lesson) => (
+                    <button
+                      key={lesson.id}
+                      onClick={() => {
+                        setActiveLesson(lesson);
+                        setActiveQuizModuleId(null);
+                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-2 text-xs font-medium rounded-md transition-colors text-left ${
+                        activeLesson?.id === lesson.id 
+                          ? "bg-primary text-primary-foreground shadow-md" 
+                          : "hover:bg-muted"
+                      }`}
                     >
-                      <TrophyIcon className="h-3 w-3 mr-2" />
-                      Avaliação do Módulo
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+                      {isCompleted(lesson.id) ? (
+                        <CheckCircle2Icon className="h-4 w-4 text-green-500 shrink-0" />
+                      ) : lesson.content_type === 'video' ? (
+                        <PlayCircleIcon className="h-4 w-4 shrink-0" />
+                      ) : (
+                        <FileTextIcon className="h-4 w-4 shrink-0" />
+                      )}
+                      <span className="truncate">{lesson.title}</span>
+                    </button>
+                  ))}
+
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className={`w-full mt-2 text-xs h-8 border-dashed ${activeQuizModuleId === module.id ? "bg-primary text-primary-foreground" : ""}`}
+                    onClick={() => startQuiz(module.id)}
+                  >
+                    <TrophyIcon className="h-3 w-3 mr-2" />
+                    Avaliação do Módulo
+                  </Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex h-screen bg-background overflow-hidden relative">
+      {/* Sidebar Desktop */}
+      <aside 
+        className={`hidden lg:flex ${
+          isSidebarOpen ? "w-80" : "w-0"
+        } transition-all duration-300 border-r bg-muted/30 flex-col shrink-0 overflow-hidden`}
+      >
+        <SidebarContent />
       </aside>
 
+      {/* Sidebar Mobile (Sheet) */}
+      <Sheet open={!isSidebarOpen && window.innerWidth < 1024} onOpenChange={(open) => setIsSidebarOpen(!open)}>
+         <SheetContent side="left" className="p-0 w-80">
+            <SidebarContent />
+         </SheetContent>
+      </Sheet>
+
       {/* Área Principal do Player */}
-      <main className="flex-1 flex flex-col overflow-hidden relative">
-        <header className="h-14 border-b flex items-center px-6 justify-between bg-background z-10">
+      <main className="flex-1 flex flex-col overflow-hidden relative w-full">
+        <header className="h-14 border-b flex items-center px-4 sm:px-6 justify-between bg-background z-10 shrink-0">
           <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             <MenuIcon className="h-5 w-5" />
           </Button>
-          <div className="text-sm font-semibold truncate px-4">
-            {activeLesson?.title || "Selecione uma aula"}
+          <div className="text-xs sm:text-sm font-semibold truncate px-2 sm:px-4 text-center flex-1">
+            {activeLesson?.title || (activeQuizModuleId ? "Avaliação do Módulo" : "Selecione uma aula")}
           </div>
-          <div className="w-10"></div> {/* Spacer */}
+          <Link href="/dashboard" className="lg:hidden text-muted-foreground">
+             <XIcon className="h-5 w-5" />
+          </Link>
+          <div className="hidden lg:block w-10"></div> 
         </header>
 
         <div className="flex-1 overflow-y-auto bg-muted/10">
