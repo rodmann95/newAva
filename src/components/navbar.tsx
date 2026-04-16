@@ -1,15 +1,10 @@
-"use client";
-
 import { AuthButton } from "./auth-button";
-import { GraduationCap, Menu } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import Link from "next/link";
-import { Suspense, useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+import { MobileNav } from "./mobile-nav";
 
 export function Navbar() {
-  const [open, setOpen] = useState(false);
-
   return (
     <nav className="w-full border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4 px-6 h-16">
@@ -28,25 +23,14 @@ export function Navbar() {
         </div>
 
         {/* Mobile Nav */}
-        <div className="md:hidden flex items-center gap-2">
-           <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild>
-                 <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                 </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-72 pt-12">
-                 <div className="flex flex-col gap-4">
-                    <Link href="/" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">Início</Link>
-                    <Link href="/dashboard" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">Meus Cursos</Link>
-                    <div className="pt-4" onClick={() => setOpen(false)}>
-                       <AuthButton />
-                    </div>
-                 </div>
-              </SheetContent>
-           </Sheet>
-        </div>
+        <Suspense fallback={<div className="md:hidden h-8 w-8 bg-slate-100 animate-pulse rounded-md" />}>
+           <MobileNavWrapper />
+        </Suspense>
       </div>
     </nav>
   );
+}
+
+async function MobileNavWrapper() {
+  return <MobileNav authButton={<AuthButton />} />;
 }
