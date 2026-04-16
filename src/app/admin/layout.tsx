@@ -1,4 +1,4 @@
-﻿import { AdminSidebar } from "@/components/admin-sidebar";
+import { AdminSidebar } from "@/components/admin-sidebar";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -21,7 +21,7 @@ export default function AdminLayout({
         {/* Header Mobile / Admin Header */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10">
           <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-            Ãrea de GestÃ£o Municipal
+            Área de Gestão Municipal
           </h2>
           <div className="flex items-center gap-4">
              <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100 p-1 px-3 rounded-full">

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -54,14 +54,14 @@ export function SignUpForm({
 
     if (password !== repeatPassword) {
       setError("Passwords do not match");
-      toast.error("As senhas nÃ£o conferem!");
+      toast.error("As senhas não conferem!");
       setIsLoading(false);
       return;
     }
 
     if (!institutionId) {
-      setError("Selecione sua instituiÃ§Ã£o");
-      toast.error("Selecione sua instituição/instituiÃ§Ã£o!");
+      setError("Selecione sua instituição");
+      toast.error("Selecione sua instituição!");
       setIsLoading(false);
       return;
     }
@@ -83,7 +83,7 @@ export function SignUpForm({
         throw error;
       }
       
-      toast.success("Cadastro realizado! Verifique seu e-mail ou faÃ§a login.");
+      toast.success("Cadastro realizado! Verifique seu e-mail ou faça login.");
       router.push("/auth/sign-up-success");
     } catch (error: any) {
       setError(error?.message || "Erro desconhecido ao cadastrar");
@@ -103,7 +103,7 @@ export function SignUpForm({
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="institution">InstituiÃ§Ã£o / Instituição</Label>
+                <Label htmlFor="institution">Instituição</Label>
                 <Select onValueChange={setInstitutionId} required>
                   <SelectTrigger id="institution">
                     <SelectValue placeholder="Selecione sua instituição" />
@@ -155,7 +155,7 @@ export function SignUpForm({
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              JÃ¡ tem uma conta?{" "}
+              Já tem uma conta?{" "}
               <Link href="/auth/login" className="underline underline-offset-4 text-primary">
                 Fazer Login
               </Link>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { getInstitutions, createInstitution } from "@/features/institutions/actions";
@@ -11,7 +11,7 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LandmarkIcon, Loader2Icon, PlusIcon, GlobeIcon } from "lucide-react";
+import { LandmarkIcon, Loader2Icon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,7 +65,7 @@ export default function InstitutionsManagementPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Gestão de Instituições</h1>
-          <p className="text-slate-500 text-sm">Gerencie todas as prefeituras e organizações da plataforma.</p>
+          <p className="text-slate-500 text-sm">Gerencie todas as organizações cadastradas na plataforma.</p>
         </div>
         
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -79,15 +79,15 @@ export default function InstitutionsManagementPage() {
             <DialogHeader>
               <DialogTitle>Cadastrar Instituição</DialogTitle>
               <DialogDescription>
-                Adicione uma nova prefeitura ou organização ao sistema.
+                Adicione uma nova organização ao sistema.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
+              <div className="grid gap-2 text-sm">
                 <Label htmlFor="name">Nome da Instituição</Label>
                 <Input 
                   id="name" 
-                  placeholder="Ex: Prefeitura de São Paulo" 
+                  placeholder="Ex: Instituto Federal, Corporativo..." 
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                 />

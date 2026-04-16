@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { getUsers, updateUserRole, updateUserInstitution } from "@/features/admin/user-actions";
@@ -42,7 +42,7 @@ export default function UsersManagementPage() {
     if (usersRes.data) setUsers(usersRes.data);
     if (instRes.data) setInstitutions(instRes.data);
     
-    if (usersRes.error) toast.error("Falha ao carregar usuÃ¡rios");
+    if (usersRes.error) toast.error("Falha ao carregar usuários");
     setIsLoading(false);
   };
 
@@ -57,7 +57,7 @@ export default function UsersManagementPage() {
   const handleInstitutionChange = async (userId: string, instId: string) => {
     const { error } = await updateUserInstitution(userId, instId);
     if (!error) {
-      toast.success("InstituiÃ§Ã£o atualizada");
+      toast.success("Instituição atualizada");
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, institution_id: instId } : u));
     } else {
       toast.error("Erro: " + error);
@@ -76,8 +76,8 @@ export default function UsersManagementPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">GestÃ£o de UsuÃ¡rios</h1>
-          <p className="text-slate-500 text-sm">Gerencie o acesso e o vÃ­nculo com as instituiçãos.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Gestão de Usuários</h1>
+          <p className="text-slate-500 text-sm">Gerencie o acesso e o vínculo com as instituições.</p>
         </div>
         <UsersIcon className="h-8 w-8 text-slate-300" />
       </div>
@@ -93,9 +93,9 @@ export default function UsersManagementPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nome</TableHead>
-                  <TableHead>VÃ­nculo (Instituição)</TableHead>
+                  <TableHead>Vínculo (Instituição)</TableHead>
                   <TableHead>Cargo</TableHead>
-                  <TableHead className="text-right">AÃ§Ãµes</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -110,7 +110,7 @@ export default function UsersManagementPage() {
                         onValueChange={(val) => handleInstitutionChange(user.id, val)}
                       >
                         <SelectTrigger className="w-[180px] h-8 text-xs">
-                          <SelectValue placeholder="Sem InstituiÃ§Ã£o" />
+                          <SelectValue placeholder="Sem Instituição" />
                         </SelectTrigger>
                         <SelectContent>
                           {institutions.map(i => (
@@ -140,7 +140,7 @@ export default function UsersManagementPage() {
                 {users.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={4} className="h-24 text-center text-slate-500">
-                      Nenhum usuÃ¡rio encontrado.
+                      Nenhum usuário encontrado.
                     </TableCell>
                   </TableRow>
                 )}
