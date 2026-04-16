@@ -30,35 +30,27 @@ export function LoginForm({
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("LOGIN_DEBUG: Submit clicked");
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
     try {
-      console.log("LOGIN_DEBUG: Processing login for:", email);
-      // alert("Tentando logar... verifique o console do navegador!");
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
       if (error) {
-        console.error("LOGIN_DEBUG Error:", error);
         toast.error("Erro: " + error.message);
         throw error;
       }
       
-      console.log("LOGIN_DEBUG: Success!", data);
-      toast.success("Login realizado! Redirecionando...");
+      toast.success("Login realizado com sucesso! Redirecionando...");
       
       router.refresh(); 
       router.push("/dashboard");
     } catch (error: any) {
-      console.error("LOGIN_DEBUG Catch Block:", error);
       setError(error?.message || "Erro desconhecido ao logar");
-      toast.error("Falha: " + (error?.message || "Erro desconhecido"));
     } finally {
       setIsLoading(false);
     }
