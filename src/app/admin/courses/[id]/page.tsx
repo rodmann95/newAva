@@ -2,10 +2,12 @@ import { getCourseWithDetails } from "@/features/courses/actions";
 import { CourseEditor } from "@/features/courses/components/CourseEditor";
 import { PublishToggle } from "@/features/courses/components/PublishToggle";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon, Loader2Icon } from "lucide-react";
+import { ChevronLeftIcon, Loader2Icon, Users, Layout } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CourseVisibilityManager } from "@/features/courses/components/CourseVisibilityManager";
 
 interface CourseEditorPageProps {
   params: Promise<{ id: string }>;
@@ -47,13 +49,35 @@ async function CourseEditorContent({ params }: CourseEditorPageProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{course.title}</h1>
-            <p className="text-muted-foreground">Editor de Conteúdo e Estrutura</p>
+            <p className="text-muted-foreground">Configurações e Conteúdo do Aluno</p>
           </div>
         </div>
         <PublishToggle courseId={course.id} isPublished={course.is_published ?? false} />
       </div>
 
-      <CourseEditor course={course} />
+      <Tabs defaultValue="content" className="space-y-6">
+        <TabsList className="bg-slate-100 p-1">
+          <TabsTrigger value="content" className="gap-2">
+            <Layout className="h-4 w-4" />
+            Conteúdo das Aulas
+          </TabsTrigger>
+          <TabsTrigger value="visibility" className="gap-2">
+            <Users className="h-4 w-4" />
+            Visibilidade (Instituições)
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="content">
+          <CourseEditor course={course} />
+        </TabsContent>
+        
+        <TabsContent value="visibility">
+          <CourseVisibilityManager 
+            courseId={course.id} 
+            initialSelectedIds={course.linked_institution_ids} 
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -30,6 +30,7 @@ export type Lesson = {
 };
 
 export type CourseWithModules = Course & {
+  linked_institution_ids?: string[];
   modules: (Module & {
     lessons: Lesson[];
     questions: Question[];

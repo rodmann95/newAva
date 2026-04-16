@@ -23,7 +23,7 @@ export async function getAvailableCourses() {
 
     if (!profile?.institution_id) return { data: [], error: "Sua conta ainda não foi vinculada a uma instituição." };
 
-    // Fetch enrolled course IDs to exclude them from the catalog
+    // 2. Fetch enrolled course IDs to exclude them from the catalog
     const { data: enrollments } = await supabase
       .from("enrollments")
       .select("course_id")
@@ -33,11 +33,21 @@ export async function getAvailableCourses() {
       .map(e => e.course_id)
       .filter(id => id !== null);
 
-    // Fetch published courses in the user's institution
+    // 3. Fetch IDs of courses visible to this institution
+    const { data: visibleCourseLinks } = await supabase
+      .from("course_institutions")
+      .select("course_id")
+      .eq("institution_id", profile.institution_id);
+    
+    const visibleCourseIds = (visibleCourseLinks || []).map(link => link.course_id);
+
+    if (visibleCourseIds.length === 0) return { data: [], error: null };
+
+    // 4. Fetch published courses that are IN visibleCourseIds AND NOT IN enrolledIds
     let query = supabase
       .from("courses")
       .select("*")
-      .eq("institution_id", profile.institution_id)
+      .in("id", visibleCourseIds)
       .eq("is_published", true);
     
     if (enrolledIds.length > 0) {

@@ -54,21 +54,33 @@ export async function createCourse(title: string, description: string) {
     return { data: null, error: "Permissão negada." };
   }
   
-  const { data, error } = await supabase
+  // 1. Create the course
+  const { data: course, error } = await supabase
     .from("courses")
     .insert({
       title,
       description,
-      institution_id: profile.institution_id,
+      institution_id: profile.institution_id, // Original owner
       is_published: false
     })
     .select()
     .single();
     
   if (error) return { data: null, error: error.message };
+
+  // 2. Link to all institutions by default, avoiding RLS issues by using the current transaction logic if possible
+  // NOTE: Simple insert into course_institutions for ALL existing institutions
+  const { data: allInstitutions } = await supabase.from("institutions").select("id");
+  if (allInstitutions && allInstitutions.length > 0) {
+    const links = allInstitutions.map(inst => ({
+      course_id: course.id,
+      institution_id: inst.id
+    }));
+    await supabase.from("course_institutions").insert(links);
+  }
   
   revalidatePath("/admin/courses");
-  return { data, error: null };
+  return { data: course, error: null };
 }
 
 /**
@@ -136,17 +148,21 @@ export async function getCourseWithDetails(id: string): Promise<{ data: CourseWi
     
     lessons = lessonsData || [];
 
-    const { data: questionsData } = await supabase
-      .from("questions")
-      .select("*, options(*)")
-      .in("module_id", moduleIds);
-    
     questions = questionsData || [];
   }
+
+  // 3.5 Fetch linked institutions
+  const { data: linkedInsts } = await supabase
+    .from("course_institutions")
+    .select("institution_id")
+    .eq("course_id", id);
+  
+  const linked_institution_ids = (linkedInsts || []).map(li => li.institution_id);
 
   // 4. Assemble the CourseWithModules object
   const fullCourse: CourseWithModules = {
     ...course,
+    linked_institution_ids,
     modules: (modules || []).map(mod => ({
       ...mod,
       lessons: lessons.filter(l => l.module_id === mod.id),
@@ -257,3 +273,36 @@ export async function deleteLesson(id: string, courseId: string) {
   revalidatePath(`/admin/courses/${courseId}`);
   return { error: null };
 }
+
+/**
+ * Updates which institutions can see a specific course
+ */
+export async function updateCourseVisibility(courseId: string, institutionIds: string[]) {
+  const supabase = await createClient();
+  
+  // 1. Delete existing links
+  const { error: deleteError } = await supabase
+    .from("course_institutions")
+    .delete()
+    .eq("course_id", courseId);
+    
+  if (deleteError) return { error: deleteError.message };
+
+  // 2. Insert new ones
+  if (institutionIds.length > 0) {
+    const links = institutionIds.map(instId => ({
+      course_id: courseId,
+      institution_id: instId
+    }));
+    
+    const { error: insertError } = await supabase
+      .from("course_institutions")
+      .insert(links);
+      
+    if (insertError) return { error: insertError.message };
+  }
+  
+  revalidatePath(`/admin/courses/${courseId}`);
+  return { error: null };
+}
+
