@@ -25,10 +25,10 @@ export default async function Home() {
       <div className="max-w-5xl mx-auto pt-20 pb-16 px-6 text-center">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
           Capacitação Digital para o <br />
-          <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">Setor Público</span>
+          <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">Ensino</span>
         </h1>
         <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Plataforma completa para gestão de cursos, avaliações automáticas e certificação com validade jurídica para municípios.
+          Plataforma completa para gestão de cursos, avaliações automáticas e certificação com validade jurídica para municípios e instituições.
         </p>
         
         <div className="flex flex-wrap justify-center gap-4">
