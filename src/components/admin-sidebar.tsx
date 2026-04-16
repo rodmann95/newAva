@@ -11,12 +11,14 @@ import {
   ArrowLeftIcon,
   GraduationCapIcon,
   SettingsIcon,
-  AwardIcon
+  AwardIcon,
+  LandmarkIcon
 } from "lucide-react";
 
 const navigation = [
   { name: "Visão Geral", href: "/admin", icon: LayoutDashboardIcon },
   { name: "Cursos", href: "/admin/courses", icon: BookOpenIcon },
+  { name: "Instituições", href: "/admin/institutions", icon: LandmarkIcon },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3Icon },
   { name: "Usuários", href: "/admin/users", icon: UsersIcon },
   { name: "Certificados", href: "/admin/certificates", icon: AwardIcon },
