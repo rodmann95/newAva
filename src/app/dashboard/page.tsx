@@ -72,13 +72,13 @@ async function DashboardContent() {
         )}
 
         {/* Profile Info & Institution */}
-        <div className="flex flex-wrap gap-4">
-          <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 text-sm font-medium">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 text-xs sm:text-sm font-medium w-fit">
             <LandmarkIcon className="h-4 w-4" />
             Instituição: <span className="font-bold">{profile?.institutions?.name || "Sem Vínculo"}</span>
           </div>
           {certificates && certificates.length > 0 && (
-            <div className="flex items-center gap-3 bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl border border-yellow-100 text-sm font-medium">
+            <div className="flex items-center gap-3 bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl border border-yellow-100 text-xs sm:text-sm font-medium w-fit">
               <AwardIcon className="h-4 w-4" />
               Certificados Conquistados: <span className="font-bold">{certificates.length}</span>
             </div>
@@ -94,26 +94,26 @@ async function DashboardContent() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {enrolledCourses && enrolledCourses.length > 0 ? (
               enrolledCourses.map((course) => (
                 <Card key={course.id} className="flex flex-col border-none shadow-md hover:shadow-xl transition-all duration-300">
-                  <CardHeader>
+                  <CardHeader className="p-5">
                     <CardTitle className="text-lg">{course.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">
+                    <CardDescription className="line-clamp-2 text-xs">
                       {course.description || "Sem descrição disponível."}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-1 space-y-4">
+                  <CardContent className="flex-1 space-y-4 px-5">
                     <div className="space-y-2">
-                      <div className="flex justify-between text-xs font-semibold">
+                      <div className="flex justify-between text-[10px] font-bold text-slate-500">
                         <span>PROGRESSO</span>
                         <span>{course.progress}%</span>
                       </div>
                       <Progress value={course.progress} className="h-2" />
                     </div>
                   </CardContent>
-                  <CardFooter className="flex flex-col gap-2">
+                  <CardFooter className="flex flex-col gap-2 p-5 pt-0 mt-4">
                     {course.progress === 100 ? (
                       <DownloadCertificate 
                         courseId={course.id} 
@@ -131,7 +131,7 @@ async function DashboardContent() {
                 </Card>
               ))
             ) : (
-              <div className="md:col-span-3 py-20 text-center space-y-4 bg-white rounded-2xl border-2 border-dashed border-slate-200">
+              <div className="sm:col-span-2 lg:col-span-3 py-16 text-center space-y-4 bg-white rounded-2xl border-2 border-dashed border-slate-200 px-6">
                 <LayoutDashboardIcon className="h-12 w-12 text-slate-300 mx-auto" />
                 <h3 className="text-lg font-medium text-slate-900">Nenhum curso iniciado</h3>
               </div>
@@ -146,11 +146,11 @@ async function DashboardContent() {
             Minha Galeria de Certificados
           </h2>
           {certificates && certificates.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {certificates.map((cert: any) => (
                 <Card key={cert.id} className="bg-slate-50 border-slate-200">
                   <CardHeader className="p-4">
-                    <CardTitle className="text-sm">{cert.courses?.title}</CardTitle>
+                    <CardTitle className="text-sm line-clamp-1">{cert.courses?.title}</CardTitle>
                     <CardDescription className="text-[10px]">Emitido em {new Date(cert.created_at).toLocaleDateString()}</CardDescription>
                   </CardHeader>
                   <CardFooter className="p-4 pt-0">
@@ -179,16 +179,16 @@ async function DashboardContent() {
             </h2>
           </div>
           {availableCourses && availableCourses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {availableCourses.map((course) => (
                 <Card key={course.id} className="flex flex-col border-slate-200 bg-white/50 hover:bg-white hover:shadow-lg transition-all border-l-4 border-l-blue-500">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-slate-900">{course.title}</CardTitle>
-                    <CardDescription className="line-clamp-3 text-slate-600">
+                  <CardHeader className="p-5 sm:p-6">
+                    <CardTitle className="text-lg sm:text-xl text-slate-900">{course.title}</CardTitle>
+                    <CardDescription className="line-clamp-3 text-slate-600 text-sm sm:text-base">
                       {course.description || "Sem descrição disponível."}
                     </CardDescription>
                   </CardHeader>
-                  <CardFooter className="mt-auto pt-6 flex flex-col gap-2">
+                  <CardFooter className="mt-auto p-5 sm:p-6 pt-0 flex flex-col gap-2">
                     <Button variant="outline" className="w-full" asChild>
                       <Link href={`/courses/${course.id}`}>
                         Ver Detalhes
