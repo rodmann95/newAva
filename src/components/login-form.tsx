@@ -47,8 +47,18 @@ export function LoginForm({
       
       toast.success("Login realizado com sucesso! Redirecionando...");
       
-      router.refresh(); 
-      router.push("/dashboard");
+      // Get user profile to check role for conditional redirect
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user?.id)
+        .single();
+
+      if (profile?.role === "admin" || profile?.role === "professor" || profile?.role === "master") {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/dashboard";
+      }
     } catch (error: any) {
       setError(error?.message || "Erro desconhecido ao logar");
     } finally {
