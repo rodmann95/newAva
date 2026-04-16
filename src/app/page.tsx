@@ -76,7 +76,7 @@ export default async function Home() {
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-12 px-6 text-center">
-        <p className="text-sm">© 2026 Plataforma AVA GovTech - Desenvolvido para Gestão Municipal Moderna.</p>
+        <p className="text-sm">© 2026 Plataforma SkillHub AVA - Desenvolvido para Gestão Educacional Moderna.</p>
       </footer>
     </main>
   );

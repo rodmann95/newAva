@@ -10,7 +10,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4 px-6 h-16">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
           <GraduationCap className="h-8 w-8 text-blue-600" />
-          <span className="tracking-tight text-lg sm:text-xl">AVA <span className="text-blue-600">GovTech</span></span>
+          <span className="tracking-tight text-lg sm:text-xl">SkillHub <span className="text-blue-600">AVA</span></span>
         </Link>
         
         {/* Desktop Nav */}

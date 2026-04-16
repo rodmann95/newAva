@@ -24,7 +24,7 @@ export default function AdminLayout({
           <div className="flex items-center gap-2">
             <AdminMobileNav />
             <h2 className="text-xs sm:text-sm font-semibold text-slate-500 uppercase tracking-wider truncate">
-              Gestão Municipal
+              Gestão AVA
             </h2>
           </div>
           <div className="flex items-center gap-4">

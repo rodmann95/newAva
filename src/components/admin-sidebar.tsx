@@ -31,7 +31,7 @@ export function AdminSidebar() {
     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-slate-200 bg-white px-6 pb-4 h-full">
       <div className="flex h-16 shrink-0 items-center gap-2">
         <GraduationCapIcon className="h-8 w-8 text-blue-600" />
-        <span className="font-bold text-xl tracking-tight">AVA <span className="text-blue-600">Gestor</span></span>
+        <span className="font-bold text-xl tracking-tight">SkillHub <span className="text-blue-600">Gestor</span></span>
       </div>
       <nav className="flex flex-1 flex-col">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
