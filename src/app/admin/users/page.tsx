@@ -20,13 +20,15 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { UsersIcon, Loader2Icon } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 export default function UsersManagementPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [institutions, setInstitutions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -68,25 +70,39 @@ export default function UsersManagementPage() {
     switch (role) {
       case "admin": return <Badge className="bg-red-100 text-red-700 border-none uppercase text-[10px]">Admin</Badge>;
       case "professor": return <Badge className="bg-blue-100 text-blue-700 border-none uppercase text-[10px]">Prof</Badge>;
+       case "master": return <Badge className="bg-purple-100 text-purple-700 border-none uppercase text-[10px]">Master</Badge>;
       default: return <Badge variant="secondary" className="uppercase text-[10px]">Aluno</Badge>;
     }
   };
 
+  const filteredUsers = users.filter(u => 
+    (u.full_name?.toLowerCase() || "").includes(search.toLowerCase()) || 
+    (u.email?.toLowerCase() || "").includes(search.toLowerCase())
+  );
+
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Gestão de Usuários</h1>
           <p className="text-slate-500 text-sm">Gerencie o acesso e o vínculo com as instituições.</p>
         </div>
-        <UsersIcon className="h-8 w-8 text-slate-300" />
+        <div className="relative w-full sm:w-64">
+           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+           <Input 
+             placeholder="Buscar por nome ou email..." 
+             className="pl-9 h-10"
+             value={search}
+             onChange={(e) => setSearch(e.target.value)}
+           />
+        </div>
       </div>
 
       <Card className="border-none shadow-sm overflow-hidden text-sm">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center gap-4">
-              <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -100,10 +116,13 @@ export default function UsersManagementPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => (
+                  {filteredUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium whitespace-nowrap">
-                        {user.full_name || "Sem nome"}
+                        <div className="flex flex-col">
+                            <span>{user.full_name || "Sem nome"}</span>
+                            <span className="text-[10px] text-slate-400 font-normal">{user.email}</span>
+                        </div>
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
                         <Select 
@@ -138,7 +157,7 @@ export default function UsersManagementPage() {
                       </TableCell>
                     </TableRow>
                   ))}
-                  {users.length === 0 && (
+                  {filteredUsers.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={4} className="h-24 text-center text-slate-500">
                         Nenhum usuário encontrado.

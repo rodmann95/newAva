@@ -10,7 +10,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   LandmarkIcon, 
   Loader2Icon, 
@@ -18,7 +18,8 @@ import {
   Settings2, 
   Globe, 
   Palette,
-  Save
+  Save,
+  Search
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ export default function InstitutionsManagementPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [newName, setNewName] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchInstitutions();
@@ -97,44 +99,60 @@ export default function InstitutionsManagementPage() {
     setIsSaving(false);
   };
 
+  const filteredInstitutions = institutions.filter(i => 
+    i.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Gestão de Instituições</h1>
           <p className="text-slate-500 text-sm">Gerencie todas as organizações e suas identidades visuais.</p>
         </div>
         
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <PlusIcon className="h-4 w-4" />
-              Nova Instituição
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Cadastrar Instituição</DialogTitle>
-              <DialogDescription>Adicione uma nova organização ao sistema.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2 text-sm">
-                <Label htmlFor="name">Nome da Instituição</Label>
-                <Input 
-                  id="name" 
-                  placeholder="Ex: Instituto Federal, Corporativo..." 
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button onClick={handleCreate} disabled={isCreating || !newName}>
-                {isCreating ? <Loader2Icon className="h-4 w-4 animate-spin" /> : "Confirmar Cadastro"}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full sm:w-64">
+            <Input 
+              placeholder="Buscar instituição..." 
+              className="pl-9"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          </div>
+
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2 shrink-0">
+                <PlusIcon className="h-4 w-4" />
+                Nova
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Cadastrar Instituição</DialogTitle>
+                <DialogDescription>Adicione uma nova organização ao sistema.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2 text-sm">
+                  <Label htmlFor="name">Nome da Instituição</Label>
+                  <Input 
+                    id="name" 
+                    placeholder="Ex: Instituto Federal, Corporativo..." 
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={handleCreate} disabled={isCreating || !newName}>
+                  {isCreating ? <Loader2Icon className="h-4 w-4 animate-spin" /> : "Confirmar Cadastro"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Card className="border-none shadow-sm overflow-hidden">
@@ -154,7 +172,7 @@ export default function InstitutionsManagementPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {institutions.map((inst) => (
+                  {filteredInstitutions.map((inst) => (
                     <TableRow key={inst.id} className="group">
                       <TableCell className="font-semibold text-slate-700 whitespace-nowrap">
                         <div className="flex items-center gap-2">
@@ -184,6 +202,13 @@ export default function InstitutionsManagementPage() {
                       </TableCell>
                     </TableRow>
                   ))}
+                  {filteredInstitutions.length === 0 && (
+                     <TableRow>
+                        <TableCell colSpan={3} className="h-24 text-center text-slate-500">
+                          Nenhuma instituição encontrada.
+                        </TableCell>
+                     </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
@@ -191,7 +216,7 @@ export default function InstitutionsManagementPage() {
         </CardContent>
       </Card>
 
-      {/* Edit Sheet (Configurações Unificadas) */}
+      {/* Edit Sheet */}
       <Sheet open={!!selectedInst} onOpenChange={() => setSelectedInst(null)}>
         <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
           <SheetHeader className="mb-8">
