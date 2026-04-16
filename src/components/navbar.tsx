@@ -1,3 +1,5 @@
+"use client";
+
 import { AuthButton } from "./auth-button";
 import { GraduationCapIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
