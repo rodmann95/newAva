@@ -22,7 +22,6 @@ const navigation = [
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3Icon },
   { name: "Usuários", href: "/admin/users", icon: UsersIcon },
   { name: "Certificados", href: "/admin/certificates", icon: AwardIcon },
-  { name: "Configurações", href: "/admin/settings", icon: SettingsIcon },
 ];
 
 export function AdminSidebar() {
