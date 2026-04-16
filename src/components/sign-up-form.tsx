@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function SignUpForm({
   className,
@@ -29,28 +30,40 @@ export function SignUpForm({
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("SIGNUP_DEBUG: Submit clicked");
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
     if (password !== repeatPassword) {
       setError("Passwords do not match");
+      toast.error("As senhas não conferem!");
       setIsLoading(false);
       return;
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      console.log("SIGNUP_DEBUG: Attempting signup for:", email);
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
-      if (error) throw error;
+      
+      if (error) {
+        console.error("SIGNUP_DEBUG Error:", error);
+        toast.error("Erro no cadastro: " + error.message);
+        throw error;
+      }
+      
+      console.log("SIGNUP_DEBUG: Success!", data);
+      toast.success("Cadastro realizado! Verifique seu e-mail ou faça login.");
       router.push("/auth/sign-up-success");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+    } catch (error: any) {
+      console.error("SIGNUP_DEBUG Catch:", error);
+      setError(error?.message || "Erro desconhecido ao cadastrar");
     } finally {
       setIsLoading(false);
     }

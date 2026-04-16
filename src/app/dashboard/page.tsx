@@ -168,8 +168,10 @@ async function DashboardContent() {
     return (
       <div className="py-20 text-center space-y-4">
         <h2 className="text-xl font-bold text-red-600">Erro ao carregar o dashboard</h2>
-        <p className="text-slate-600">Ocorreu um problema inesperado. Tente recarregar a página.</p>
-        <Button onClick={() => window.location.reload()}>Recarregar</Button>
+        <p className="text-slate-600">Ocorreu um problema inesperado ao processar os dados do servidor.</p>
+        <Button asChild variant="outline">
+          <Link href="/dashboard">Tentar Recarregar</Link>
+        </Button>
       </div>
     );
   }
