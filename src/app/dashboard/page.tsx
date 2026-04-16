@@ -16,7 +16,7 @@ export default function StudentDashboardPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       <Navbar />
-      <div className="container mx-auto py-10 space-y-8">
+      <div className="container mx-auto px-4 sm:px-6 py-10 space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900">Meu Dashboard</h1>
@@ -86,9 +86,9 @@ async function DashboardContent() {
         </div>
 
         {/* Meus Cursos Section */}
-        <section className="space-y-6">
+        <section className="space-y-6" id="cursos">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800" id="cursos">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
               <BookOpenIcon className="h-5 w-5 text-primary" />
               Cursos em Andamento
             </h2>
@@ -139,39 +139,8 @@ async function DashboardContent() {
           </div>
         </section>
 
-        {/* Certificates Section */}
-        <section className="space-y-6 pt-10 border-t">
-          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
-            <AwardIcon className="h-5 w-5 text-yellow-600" />
-            Minha Galeria de Certificados
-          </h2>
-          {certificates && certificates.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {certificates.map((cert: any) => (
-                <Card key={cert.id} className="bg-slate-50 border-slate-200">
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-sm line-clamp-1">{cert.courses?.title}</CardTitle>
-                    <CardDescription className="text-[10px]">Emitido em {new Date(cert.created_at).toLocaleDateString()}</CardDescription>
-                  </CardHeader>
-                  <CardFooter className="p-4 pt-0">
-                    <DownloadCertificate 
-                      courseId={cert.course_id} 
-                      courseTitle={cert.courses?.title} 
-                      userName={profile?.full_name || "Aluno"} 
-                    />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white border text-center py-10 rounded-xl text-slate-400 text-sm italic">
-              Você ainda não possui certificados disponíveis.
-            </div>
-          )}
-        </section>
-
         {/* Catalog Section */}
-        <section className="space-y-6 pt-10 border-t">
+        <section className="space-y-6 pt-10 border-t" id="catalogo">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-700">
               <PlusIcon className="h-6 w-6" />
@@ -202,6 +171,37 @@ async function DashboardContent() {
           ) : (
             <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl text-center text-blue-600 font-medium italic">
               🚀 Você já está inscrito em todos os cursos disponíveis para sua instituição!
+            </div>
+          )}
+        </section>
+
+        {/* Certificates Section (Moved to last) */}
+        <section className="space-y-6 pt-10 border-t" id="certificados">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+            <AwardIcon className="h-5 w-5 text-yellow-600" />
+            Minha Galeria de Certificados
+          </h2>
+          {certificates && certificates.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {certificates.map((cert: any) => (
+                <Card key={cert.id} className="bg-slate-50 border-slate-200">
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm line-clamp-1">{cert.courses?.title}</CardTitle>
+                    <CardDescription className="text-[10px]">Emitido em {new Date(cert.created_at).toLocaleDateString()}</CardDescription>
+                  </CardHeader>
+                  <CardFooter className="p-4 pt-0">
+                    <DownloadCertificate 
+                      courseId={cert.course_id} 
+                      courseTitle={cert.courses?.title} 
+                      userName={profile?.full_name || "Aluno"} 
+                    />
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white border text-center py-10 rounded-xl text-slate-400 text-sm italic">
+              Você ainda não possui certificados disponíveis.
             </div>
           )}
         </section>

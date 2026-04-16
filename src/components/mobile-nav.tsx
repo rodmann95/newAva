@@ -29,6 +29,9 @@ export function MobileNav({ authButton }: MobileNavProps) {
             <Link href="/dashboard" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
               Meus Cursos
             </Link>
+            <Link href="/dashboard#certificados" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
+              Meus Certificados
+            </Link>
             <div className="pt-4" onClick={() => setOpen(false)}>
               {authButton}
             </div>
