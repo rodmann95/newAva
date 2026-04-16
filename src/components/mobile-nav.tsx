@@ -23,13 +23,16 @@ export function MobileNav({ authButton }: MobileNavProps) {
         </SheetTrigger>
         <SheetContent side="right" className="w-72 pt-12">
           <div className="flex flex-col gap-4">
-            <Link href="/" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
-              Início
-            </Link>
             <Link href="/dashboard" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
+              Meu Painel
+            </Link>
+            <Link href="/dashboard/courses" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
               Meus Cursos
             </Link>
-            <Link href="/dashboard#certificados" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
+            <Link href="/dashboard/catalog" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
+              Cursos Disponíveis
+            </Link>
+            <Link href="/dashboard/certificates" onClick={() => setOpen(false)} className="text-lg font-semibold border-b pb-2">
               Meus Certificados
             </Link>
             <div className="pt-4" onClick={() => setOpen(false)}>

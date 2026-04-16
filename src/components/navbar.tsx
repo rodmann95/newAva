@@ -16,7 +16,9 @@ export function Navbar() {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
            <Link href="/" className="text-sm font-medium hover:text-blue-600 transition-colors">Início</Link>
-           <Link href="/dashboard" className="text-sm font-medium hover:text-blue-600 transition-colors">Meus Cursos</Link>
+           <Link href="/dashboard" className="text-sm font-medium hover:text-blue-600 transition-colors">Meu Painel</Link>
+           <Link href="/dashboard/courses" className="text-sm font-medium hover:text-blue-600 transition-colors">Meus Cursos</Link>
+           <Link href="/dashboard/catalog" className="text-sm font-medium hover:text-blue-600 transition-colors">Cursos Disponíveis</Link>
           <Suspense fallback={<div className="h-8 w-20 bg-slate-100 animate-pulse rounded-md" />}>
             <AuthButton />
           </Suspense>

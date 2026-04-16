@@ -92,6 +92,9 @@ async function DashboardContent() {
               <BookOpenIcon className="h-5 w-5 text-primary" />
               Cursos em Andamento
             </h2>
+            <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700">
+               <Link href="/dashboard/courses">Ver Todos / Filtrar</Link>
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,11 +144,14 @@ async function DashboardContent() {
 
         {/* Catalog Section */}
         <section className="space-y-6 pt-10 border-t" id="catalogo">
-          <div className="space-y-1">
+          <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-700">
               <PlusIcon className="h-6 w-6" />
               Novas Capacitações Disponíveis
             </h2>
+            <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700">
+              <Link href="/dashboard/catalog">Ver Catálogo Completo</Link>
+            </Button>
           </div>
           {availableCourses && availableCourses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -177,10 +183,15 @@ async function DashboardContent() {
 
         {/* Certificates Section (Moved to last) */}
         <section className="space-y-6 pt-10 border-t" id="certificados">
-          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
-            <AwardIcon className="h-5 w-5 text-yellow-600" />
-            Minha Galeria de Certificados
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+              <AwardIcon className="h-5 w-5 text-yellow-600" />
+              Minha Galeria de Certificados
+            </h2>
+            <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700">
+               <Link href="/dashboard/certificates">Gerenciar Certificados</Link>
+            </Button>
+          </div>
           {certificates && certificates.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {certificates.map((cert: any) => (
