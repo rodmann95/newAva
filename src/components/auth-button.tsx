@@ -21,16 +21,24 @@ export async function AuthButton() {
     }
 
     return user ? (
-      <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-slate-700">Olá, {user.email}!</span>
-        {isStaff ? (
-          <Button asChild size="sm" variant="outline" className="text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">
-            <Link href="/admin">Painel Gestor</Link>
-          </Button>
-        ) : (
-          <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-400 uppercase tracking-tighter">Perfil Aluno</span>
-        )}
-        <LogoutButton />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+          <span className="text-xs sm:text-sm font-medium text-slate-700 truncate max-w-[150px] sm:max-w-none">
+             {user.email}
+          </span>
+          {isStaff ? (
+            <Button asChild size="sm" variant="outline" className="h-7 text-[10px] sm:text-xs text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">
+              <Link href="/admin">Painel Gestor</Link>
+            </Button>
+          ) : (
+            <span className="hidden sm:inline-block text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-400 uppercase tracking-tighter w-fit">
+              Perfil Aluno
+            </span>
+          )}
+        </div>
+        <div className="w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-none">
+          <LogoutButton />
+        </div>
       </div>
     ) : (
       <div className="flex gap-2">
