@@ -16,13 +16,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { 
-  PlayCircleIcon, 
-  FileTextIcon, 
-  CheckCircle2Icon, 
-  ChevronLeftIcon,
-  MenuIcon,
-  TrophyIcon,
-  XIcon
+  PlayCircle, 
+  FileText, 
+  CheckCircle2, 
+  ChevronLeft,
+  Menu,
+  Trophy,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -143,13 +143,13 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
       <main className="flex-1 flex flex-col overflow-hidden relative w-full">
         <header className="h-14 border-b flex items-center px-4 sm:px-6 justify-between bg-background z-10 shrink-0">
           <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-            <MenuIcon className="h-5 w-5" />
+            <Menu className="h-5 w-5" />
           </Button>
           <div className="text-xs sm:text-sm font-semibold truncate px-2 sm:px-4 text-center flex-1">
             {activeLesson?.title || (activeQuizModuleId ? "Avaliação do Módulo" : "Selecione uma aula")}
           </div>
           <Link href="/dashboard" className="lg:hidden text-muted-foreground">
-             <XIcon className="h-5 w-5" />
+             <X className="h-5 w-5" />
           </Link>
           <div className="hidden lg:block w-10"></div> 
         </header>

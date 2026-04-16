@@ -1,7 +1,7 @@
 "use client";
 
 import { AuthButton } from "./auth-button";
-import { GraduationCapIcon, MenuIcon } from "lucide-react";
+import { GraduationCap, Menu } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -14,7 +14,7 @@ export function Navbar() {
     <nav className="w-full border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4 px-6 h-16">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <GraduationCapIcon className="h-8 w-8 text-blue-600" />
+          <GraduationCap className="h-8 w-8 text-blue-600" />
           <span className="tracking-tight text-lg sm:text-xl">AVA <span className="text-blue-600">GovTech</span></span>
         </Link>
         
@@ -32,7 +32,7 @@ export function Navbar() {
            <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                  <Button variant="ghost" size="icon">
-                    <MenuIcon className="h-6 w-6" />
+                    <Menu className="h-6 w-6" />
                  </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-72 pt-12">

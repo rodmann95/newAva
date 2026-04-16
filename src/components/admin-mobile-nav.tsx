@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { MenuIcon } from "lucide-react";
+import { Menu } from "lucide-react";
 import { AdminSidebar } from "./admin-sidebar";
 
 export function AdminMobileNav() {
@@ -14,7 +14,7 @@ export function AdminMobileNav() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="mr-2">
-            <MenuIcon className="h-6 w-6" />
+            <Menu className="h-6 w-6" />
             <span className="sr-only">Abrir menu</span>
           </Button>
         </SheetTrigger>
