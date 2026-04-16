@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -33,17 +35,24 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("Attempting login for:", email);
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) throw error;
       
-      console.log("Login successful! Redirecting...");
-      router.refresh(); // Força o reinício do cache da rota no Next.js
+      if (error) {
+        console.error("Supabase Login Error:", error);
+        toast.error(error.message);
+        throw error;
+      }
+      
+      console.log("Login successful!", data);
+      toast.success("Login realizado com sucesso! Redirecionando...");
+      
+      router.refresh(); 
       router.push("/dashboard");
     } catch (error: any) {
-      console.error("Login Error:", error);
       setError(error?.message || "Erro desconhecido ao logar");
     } finally {
       setIsLoading(false);

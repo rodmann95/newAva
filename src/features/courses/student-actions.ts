@@ -8,43 +8,50 @@ import { Course, CourseWithModules } from "./types";
  * Fetches courses published in the institution that the student is NOT enrolled in
  */
 export async function getAvailableCourses() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) return { data: null, error: "Não autenticado" };
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) return { data: [], error: "Sessão inválida. Logue novamente." };
 
-  // Fetch student's institution
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("institution_id")
-    .eq("id", user.id)
-    .single();
+    // Fetch student's institution
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("institution_id")
+      .eq("id", user.id)
+      .maybeSingle();
 
-  if (!profile?.institution_id) return { data: null, error: "Instituição não encontrada" };
+    if (!profile?.institution_id) return { data: [], error: "Sua conta ainda não foi vinculada a uma instituição." };
 
-  // Fetch enrolled course IDs to exclude them from the catalog
-  const { data: enrollments } = await supabase
-    .from("enrollments")
-    .select("course_id")
-    .eq("user_id", user.id);
-  
-  const enrolledIds = enrollments?.map(e => e.course_id) || [];
+    // Fetch enrolled course IDs to exclude them from the catalog
+    const { data: enrollments } = await supabase
+      .from("enrollments")
+      .select("course_id")
+      .eq("user_id", user.id);
+    
+    const enrolledIds = (enrollments || [])
+      .map(e => e.course_id)
+      .filter(id => id !== null);
 
-  // Fetch published courses in the user's institution
-  let query = supabase
-    .from("courses")
-    .select("*")
-    .eq("institution_id", profile.institution_id)
-    .eq("is_published", true);
-  
-  if (enrolledIds.length > 0) {
-    query = query.not("id", "in", `(${enrolledIds.join(',')})`);
+    // Fetch published courses in the user's institution
+    let query = supabase
+      .from("courses")
+      .select("*")
+      .eq("institution_id", profile.institution_id)
+      .eq("is_published", true);
+    
+    if (enrolledIds.length > 0) {
+      query = query.not("id", "in", `(${enrolledIds.join(',')})`);
+    }
+
+    const { data: availableCourses, error } = await query.order("created_at", { ascending: false });
+
+    if (error) return { data: [], error: error.message };
+    return { data: availableCourses || [], error: null };
+  } catch (err: any) {
+    console.error("Critical error in getAvailableCourses:", err);
+    return { data: [], error: "Erro interno ao buscar cursos." };
   }
-
-  const { data: availableCourses, error } = await query.order("created_at", { ascending: false });
-
-  if (error) return { data: null, error: error.message };
-  return { data: availableCourses, error: null };
 }
 
 /**
@@ -96,62 +103,95 @@ export async function getCourseCurriculum(courseId: string) {
  * Gets courses the student is enrolled in, including progress calculation
  */
 export async function getStudentDashboard() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) return { data: null, error: "Não autenticado" };
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) return { data: [], error: "Usuário não autenticado." };
 
-  // Fetch enrolled courses and their total lesson counts vs completed count
-  const { data, error } = await supabase
-    .from("enrollments")
-    .select(`
-      course_id,
-      courses:course_id (
-        id,
-        title,
-        description
-      )
-    `)
-    .eq("user_id", user.id);
+    // Fetch enrolled courses and their total lesson counts vs completed count
+    const { data, error } = await supabase
+      .from("enrollments")
+      .select(`
+        course_id,
+        courses:course_id (
+          id,
+          title,
+          description
+        )
+      `)
+      .eq("user_id", user.id);
 
-  if (error) return { data: null, error: error.message };
+    if (error) return { data: [], error: error.message };
 
-  // Calculate progress for each course
-  const coursesWithProgress = await Promise.all(
-    (data || []).map(async (item: any) => {
-      const course = item.courses;
-      
-      // Get total lessons in this course
-      const { count: totalLessons } = await supabase
-        .from("lessons")
-        .select("id", { count: "exact" })
-        .filter("module_id", "in", 
-          supabase.from("modules").select("id").eq("course_id", course.id)
-        );
+    // Calculate progress for each course
+    const coursesWithProgress = await Promise.all(
+      (data || [])
+        .filter((item: any) => item && item.courses) // Pular matrículas sem curso correspondente
+        .map(async (item: any) => {
+          const course = item.courses;
+          
+          try {
+            // 1. Get module IDs for this course
+            const { data: modules } = await supabase
+              .from("modules")
+              .select("id")
+              .eq("course_id", course.id);
+              
+            const moduleIds = (modules || []).map(m => m.id);
 
-      // Get completed lessons by this user
-      const { count: completedLessons } = await supabase
-        .from("lesson_progress")
-        .select("id", { count: "exact" })
-        .eq("user_id", user.id)
-        .filter("lesson_id", "in", 
-          supabase.from("lessons").select("id").filter("module_id", "in", 
-            supabase.from("modules").select("id").eq("course_id", course.id)
-          )
-        );
+            let totalLessons = 0;
+            let completedLessons = 0;
 
-      const progress = totalLessons && totalLessons > 0 
-        ? Math.round(((completedLessons || 0) / totalLessons) * 100) 
-        : 0;
+            if (moduleIds.length > 0) {
+              // Get total lessons in this course
+              const { count: tLessons } = await supabase
+                .from("lessons")
+                .select("id", { count: "exact", head: true })
+                .in("module_id", moduleIds);
+                
+              totalLessons = tLessons || 0;
 
-      return {
-        ...course,
-        progress
-      };
-    })
-  );
+              // Get lessons IDs for this course
+              const { data: lessons } = await supabase
+                .from("lessons")
+                .select("id")
+                .in("module_id", moduleIds);
+                
+              const lessonIds = (lessons || []).map(l => l.id);
 
-  return { data: coursesWithProgress, error: null };
+              if (lessonIds.length > 0) {
+                // Get completed lessons by this user
+                const { count: cLessons } = await supabase
+                  .from("lesson_progress")
+                  .select("id", { count: "exact", head: true })
+                  .eq("user_id", user.id)
+                  .in("lesson_id", lessonIds);
+                  
+                completedLessons = cLessons || 0;
+              }
+            }
+
+            const progress = totalLessons > 0 
+              ? Math.round((completedLessons / totalLessons) * 100) 
+              : 0;
+
+            return {
+              ...course,
+              progress
+            };
+          } catch (e) {
+            console.error(`Error calculating progress for course ${course.id}:`, e);
+            return { ...course, progress: 0 };
+          }
+        })
+    );
+
+    return { data: coursesWithProgress, error: null };
+  } catch (err: any) {
+    console.error("Critical error in getStudentDashboard:", err);
+    return { data: [], error: "Erro ao processar dashboard." };
+  }
 }
 
 /**
