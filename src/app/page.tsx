@@ -1,8 +1,22 @@
 import { Navbar } from "@/components/navbar";
 import { GraduationCapIcon, ShieldCheckIcon, BarChart3Icon } from "lucide-react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let isAdmin = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    isAdmin = profile?.role === "admin" || profile?.role === "professor" || profile?.role === "master";
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <Navbar />
@@ -19,13 +33,13 @@ export default function Home() {
         
         <div className="flex flex-wrap justify-center gap-4">
           <Link 
-            href="/dashboard" 
+            href={user ? "/dashboard" : "/auth/login"} 
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-blue-200 transition-all hover:scale-105"
           >
             Acessar Meu Painel
           </Link>
           <Link 
-            href="/auth/login" 
+            href={isAdmin ? "/admin" : "/auth/login"} 
             className="bg-white border-2 border-slate-200 hover:border-blue-600 text-slate-700 px-8 py-4 rounded-xl font-bold text-lg transition-all"
           >
             Área do Gestor
