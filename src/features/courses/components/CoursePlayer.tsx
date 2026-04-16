@@ -64,7 +64,7 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
     <div className="flex flex-col h-full bg-background">
       <div className="p-4 border-b flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2 text-sm font-semibold hover:text-primary">
-          <ChevronLeftIcon className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" />
           Voltar ao Dashboard
         </Link>
       </div>
@@ -93,11 +93,11 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
                       }`}
                     >
                       {isCompleted(lesson.id) ? (
-                        <CheckCircle2Icon className="h-4 w-4 text-green-500 shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
                       ) : lesson.content_type === 'video' ? (
-                        <PlayCircleIcon className="h-4 w-4 shrink-0" />
+                        <PlayCircle className="h-4 w-4 shrink-0" />
                       ) : (
-                        <FileTextIcon className="h-4 w-4 shrink-0" />
+                        <FileText className="h-4 w-4 shrink-0" />
                       )}
                       <span className="truncate">{lesson.title}</span>
                     </button>
@@ -109,7 +109,7 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
                     className={`w-full mt-2 text-xs h-8 border-dashed ${activeQuizModuleId === module.id ? "bg-primary text-primary-foreground" : ""}`}
                     onClick={() => startQuiz(module.id)}
                   >
-                    <TrophyIcon className="h-3 w-3 mr-2" />
+                    <Trophy className="h-3 w-3 mr-2" />
                     Avaliação do Módulo
                   </Button>
                 </div>
@@ -169,7 +169,7 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
                   />
                 ) : activeLesson.content_type === 'pdf' ? (
                   <div className="flex flex-col items-center text-white p-10 text-center gap-4">
-                    <FileTextIcon className="h-16 w-16 opacity-50" />
+                    <FileText className="h-16 w-16 opacity-50" />
                     <p>Este material é um documento PDF.</p>
                     <Button variant="secondary" asChild>
                       <a href={activeLesson.content_url || "#"} target="_blank" rel="noreferrer">
@@ -200,7 +200,7 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
                 >
                   {isCompleted(activeLesson.id) ? (
                     <>
-                      <CheckCircle2Icon className="mr-2 h-5 w-5 text-green-500" />
+                      <CheckCircle2 className="mr-2 h-5 w-5 text-green-500" />
                       Aula Concluída
                     </>
                   ) : (
@@ -227,7 +227,7 @@ export function CoursePlayer({ course, completedLessonIds }: CoursePlayerProps) 
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center p-10">
-              <PlayCircleIcon className="h-16 w-16 text-muted-foreground opacity-20 mb-4" />
+              <PlayCircle className="h-16 w-16 text-muted-foreground opacity-20 mb-4" />
               <h3 className="text-xl font-medium">Pronto para começar?</h3>
               <p className="text-muted-foreground">Selecione uma aula no menu lateral para iniciar seus estudos.</p>
             </div>
