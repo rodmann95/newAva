@@ -19,9 +19,8 @@ export async function updateInstitutionSettings(id: string, updates: any) {
     .from("institutions")
     .update(updates)
     .eq("id", id)
-    .select()
-    .single();
+    .select();
 
   if (error) return { data: null, error: error.message };
-  return { data, error: null };
+  return { data: data ? data[0] : null, error: null };
 }

@@ -267,7 +267,7 @@ export async function getStudentProfile() {
       institutions ( name )
     `)
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   if (error) return { data: null, error: error.message };
   return { data, error: null };

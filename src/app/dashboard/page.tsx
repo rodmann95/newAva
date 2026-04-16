@@ -140,12 +140,12 @@ async function DashboardContent() {
         </section>
 
         {/* Certificates Section */}
-        {certificates && certificates.length > 0 && (
-          <section className="space-y-6 pt-10 border-t">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
-              <AwardIcon className="h-5 w-5 text-yellow-600" />
-              Minha Galeria de Certificados
-            </h2>
+        <section className="space-y-6 pt-10 border-t">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+            <AwardIcon className="h-5 w-5 text-yellow-600" />
+            Minha Galeria de Certificados
+          </h2>
+          {certificates && certificates.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {certificates.map((cert: any) => (
                 <Card key={cert.id} className="bg-slate-50 border-slate-200">
@@ -163,18 +163,22 @@ async function DashboardContent() {
                 </Card>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <div className="bg-white border text-center py-10 rounded-xl text-slate-400 text-sm italic">
+              Você ainda não possui certificados disponíveis.
+            </div>
+          )}
+        </section>
 
         {/* Catalog Section */}
-        {availableCourses && availableCourses.length > 0 && (
-          <section className="space-y-6 pt-10 border-t">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-700">
-                <PlusIcon className="h-6 w-6" />
-                Novas Capacitações Disponíveis
-              </h2>
-            </div>
+        <section className="space-y-6 pt-10 border-t">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-700">
+              <PlusIcon className="h-6 w-6" />
+              Novas Capacitações Disponíveis
+            </h2>
+          </div>
+          {availableCourses && availableCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {availableCourses.map((course) => (
                 <Card key={course.id} className="flex flex-col border-slate-200 bg-white/50 hover:bg-white hover:shadow-lg transition-all border-l-4 border-l-blue-500">
@@ -195,8 +199,12 @@ async function DashboardContent() {
                 </Card>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl text-center text-blue-600 font-medium italic">
+              🚀 Você já está inscrito em todos os cursos disponíveis para sua prefeitura!
+            </div>
+          )}
+        </section>
       </div>
     );
   } catch (err: any) {

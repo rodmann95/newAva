@@ -113,10 +113,13 @@ export async function getAllCertificates() {
     .select(`
       *,
       courses ( title ),
-      profiles:user_id ( full_name )
+      profiles ( full_name )
     `)
     .order("created_at", { ascending: false });
 
-  if (error) return { data: [], error: error.message };
+  if (error) {
+    console.error("Certificates Fetch Error:", error);
+    return { data: [], error: error.message };
+  }
   return { data, error: null };
 }
