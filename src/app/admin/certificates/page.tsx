@@ -77,9 +77,10 @@ export default function AdminCertificatesPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Aluno</TableHead>
+                    <TableHead>Instituição</TableHead>
                     <TableHead>Curso</TableHead>
-                    <TableHead>Código de Verificação</TableHead>
-                    <TableHead>Data de Emissão</TableHead>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Data</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -87,30 +88,42 @@ export default function AdminCertificatesPage() {
                   {filtered.length > 0 ? (
                     filtered.map((cert) => (
                       <TableRow key={cert.id}>
-                        <TableCell className="font-medium whitespace-nowrap">
+                        <TableCell className="font-medium">
                           {cert.profiles?.full_name || "Usuário desconhecido"}
                         </TableCell>
-                        <TableCell className="whitespace-nowrap">
+                        <TableCell className="text-slate-500">
+                          {cert.institutions?.name || "N/A"}
+                        </TableCell>
+                        <TableCell>
                           {cert.courses?.title}
                         </TableCell>
                         <TableCell className="font-mono text-[10px] text-blue-600">
                           {cert.verification_code}
                         </TableCell>
-                        <TableCell className="text-slate-500 text-[10px]">
-                          {new Date(cert.created_at).toLocaleDateString('pt-BR')}
+                        <TableCell className="text-slate-500 whitespace-nowrap">
+                          {cert.created_at
+                            ? new Date(cert.created_at).toLocaleDateString('pt-BR')
+                            : cert.issued_at
+                            ? new Date(cert.issued_at).toLocaleDateString('pt-BR')
+                            : '—'}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" className="h-8 gap-2 text-[10px] sm:text-xs">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 gap-2 text-[10px]"
+                            onClick={() => window.open(`/verify/${cert.verification_code}`, '_blank')}
+                          >
                             <ExternalLinkIcon className="h-3 w-3" />
-                            Visualizar
+                            Validar
                           </Button>
                         </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5} className="h-32 text-center text-slate-400 italic">
-                        Nenhum certificado corresponde aos filtros aplicados.
+                      <TableCell colSpan={6} className="h-32 text-center text-slate-400 italic">
+                        Nenhum certificado encontrado.
                       </TableCell>
                     </TableRow>
                   )}

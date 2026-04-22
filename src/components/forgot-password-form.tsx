@@ -47,53 +47,60 @@ export function ForgotPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {success ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
+        <Card className="border-none shadow-xl shadow-blue-100">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-slate-900">Verifique seu E-mail</CardTitle>
+            <CardDescription className="text-blue-600 font-medium">Instruções enviadas com sucesso!</CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive
-              a password reset email.
+          <CardContent className="text-center space-y-6">
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Enviamos um link de recuperação para o e-mail informado. 
+              Por favor, verifique sua caixa de entrada e a pasta de spam.
             </p>
+            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+              <Link href="/auth/login">Voltar ao Login</Link>
+            </Button>
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
+        <Card className="border-none shadow-xl shadow-blue-100">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-slate-900">Recuperar Senha</CardTitle>
             <CardDescription>
-              Type in your email and we&apos;ll send you a link to reset your
-              password
+              Informe seu e-mail para receber as instruções de recuperação.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleForgotPassword}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm font-semibold text-slate-700">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="exemplo@email.com"
                     required
+                    className="h-11 border-slate-200 focus-visible:ring-blue-600"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send reset email"}
+                {error && (
+                  <div className="p-3 rounded-lg bg-red-50 border border-red-100">
+                    <p className="text-xs text-red-600 font-medium">{error}</p>
+                  </div>
+                )}
+                <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700 font-bold transition-all shadow-lg shadow-blue-200" disabled={isLoading}>
+                  {isLoading ? "Enviando..." : "Enviar instruções"}
                 </Button>
               </div>
-              <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
+              <div className="mt-6 text-center text-sm text-slate-500">
+                Já possui uma conta?{" "}
                 <Link
                   href="/auth/login"
-                  className="underline underline-offset-4"
+                  className="text-blue-600 font-semibold hover:underline underline-offset-4"
                 >
-                  Login
+                  Fazer login
                 </Link>
               </div>
             </form>

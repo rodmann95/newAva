@@ -16,7 +16,7 @@ interface DownloadCertificateProps {
 export function DownloadCertificate({ courseId, courseTitle, userName }: DownloadCertificateProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const generatePDF = async () => {
+  const generatePDF = async (mode: 'preview' | 'download') => {
     setIsLoading(true);
     
     // 1. Issue certificate in DB and get/create verification code
@@ -30,6 +30,7 @@ export function DownloadCertificate({ courseId, courseTitle, userName }: Downloa
 
     const verificationCode = data.verification_code;
     const verificationUrl = `${window.location.origin}/verify/${verificationCode}`;
+    const institutionName = data.institutions?.name || "SkillHub AVA";
 
     try {
       // 2. Create PDF
@@ -43,33 +44,33 @@ export function DownloadCertificate({ courseId, courseTitle, userName }: Downloa
       const height = doc.internal.pageSize.getHeight();
 
       // Background / Border
-      doc.setDrawColor(218, 165, 32); // Gold
+      doc.setDrawColor(37, 99, 235); // SkillHub Blue (#2563eb)
       doc.setLineWidth(5);
       doc.rect(5, 5, width - 10, height - 10);
-      doc.setLineWidth(1);
+      doc.setLineWidth(0.5);
       doc.rect(7, 7, width - 14, height - 14);
 
       // Header
-      doc.setTextColor(40, 40, 40);
+      doc.setTextColor(30, 41, 59); // Slate 800
       doc.setFont("helvetica", "bold");
       doc.setFontSize(40);
       doc.text("CERTIFICADO DE CONCLUSÃO", width / 2, 40, { align: "center" });
 
       doc.setFontSize(18);
       doc.setFont("helvetica", "normal");
-      doc.text("Certificamos que", width / 2, 60, { align: "center" });
+      doc.text(`${institutionName} certifica que`, width / 2, 60, { align: "center" });
 
       // Student Name
       doc.setFontSize(32);
-      doc.setFont("helvetica", "bolditalic");
-      doc.setTextColor(0, 51, 102); // Dark Blue
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(37, 99, 235); // Blue 600
       doc.text(userName, width / 2, 80, { align: "center" });
 
       // Course Info
-      doc.setTextColor(40, 40, 40);
+      doc.setTextColor(30, 41, 59);
       doc.setFontSize(18);
       doc.setFont("helvetica", "normal");
-      doc.text("concluiu com êxito o treinamento", width / 2, 100, { align: "center" });
+      doc.text("concluiu com êxito o curso de capacitação técnica em", width / 2, 100, { align: "center" });
       
       doc.setFontSize(24);
       doc.setFont("helvetica", "bold");
@@ -87,18 +88,23 @@ export function DownloadCertificate({ courseId, courseTitle, userName }: Downloa
       
       doc.setFontSize(8);
       doc.text(`Código de Verificação: ${verificationCode}`, width - 32, height - 10, { align: "center" });
-      doc.text("Valide em plataforma-ava.gov/verify", width - 32, height - 6, { align: "center" });
+      doc.text(`Valide em ${window.location.host}/verify`, width - 32, height - 6, { align: "center" });
 
-      // Seal / Logo Placeholder
-      doc.setDrawColor(0, 51, 102);
-      doc.setLineWidth(0.5);
-      doc.circle(50, height - 40, 20);
+      // Logo/Seal
+      doc.setDrawColor(37, 99, 235);
+      doc.setLineWidth(1);
+      doc.circle(50, height - 40, 15);
       doc.setFontSize(10);
-      doc.text("PLATAFORMA", 50, height - 42, { align: "center" });
+      doc.setTextColor(37, 99, 235);
+      doc.text(institutionName.split(' ')[0], 50, height - 42, { align: "center" });
       doc.text("AVA", 50, height - 37, { align: "center" });
 
-      // Save
-      doc.save(`Certificado-${courseTitle.replace(/\s+/g, '-')}.pdf`);
+      // Option to separate Preview and Download
+      if (mode === 'preview') {
+        window.open(doc.output('bloburl'), '_blank');
+      } else {
+        doc.save(`Certificado-${courseTitle.replace(/\s+/g, '-')}.pdf`);
+      }
 
     } catch (err) {
       console.error(err);
@@ -109,17 +115,34 @@ export function DownloadCertificate({ courseId, courseTitle, userName }: Downloa
   };
 
   return (
-    <Button 
-      onClick={generatePDF} 
-      disabled={isLoading}
-      className="bg-green-600 hover:bg-green-700 text-white shadow-lg transition-all hover:scale-105"
-    >
-      {isLoading ? (
-        <Loader2Icon className="mr-2 h-5 w-5 animate-spin" />
-      ) : (
-        <DownloadIcon className="mr-2 h-5 w-5" />
-      )}
-      Baixar Meu Certificado
-    </Button>
+    <div className="flex flex-wrap gap-3">
+      <Button 
+        onClick={() => generatePDF('preview')} 
+        disabled={isLoading}
+        variant="outline"
+        className="border-blue-200 text-blue-700 hover:bg-blue-50 transition-all"
+      >
+        {isLoading ? (
+          <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <CheckCircleIcon className="mr-2 h-4 w-4" />
+        )}
+        Ver Certificado
+      </Button>
+
+      <Button 
+        onClick={() => generatePDF('download')} 
+        disabled={isLoading}
+        className="bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all hover:scale-105"
+      >
+        {isLoading ? (
+          <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <DownloadIcon className="mr-2 h-4 w-4" />
+        )}
+        Baixar PDF
+      </Button>
+    </div>
   );
 }
+

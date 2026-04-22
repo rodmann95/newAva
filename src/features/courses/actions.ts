@@ -134,7 +134,7 @@ export async function getCourseWithDetails(id: string): Promise<{ data: CourseWi
     console.warn(`[COURSE_DEBUG] Error fetching modules:`, modulesError.message);
   }
 
-  // 3. Fetch lessons for these modules
+  // 3. Fetch lessons and questions for these modules
   const moduleIds = modules?.map(m => m.id) || [];
   let lessons: any[] = [];
   let questions: any[] = [];
@@ -148,6 +148,12 @@ export async function getCourseWithDetails(id: string): Promise<{ data: CourseWi
     
     lessons = lessonsData || [];
 
+    // Fetch quiz questions for these modules
+    const { data: questionsData } = await supabase
+      .from("quiz_questions")
+      .select("*")
+      .in("module_id", moduleIds);
+    
     questions = questionsData || [];
   }
 

@@ -32,7 +32,7 @@ export function CertificatesList({ certificates, userName }: { certificates: any
             <Card key={cert.id} className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="p-4">
                 <CardTitle className="text-sm line-clamp-1">{cert.courses?.title}</CardTitle>
-                <CardDescription className="text-[10px]">Emitido em {new Date(cert.created_at).toLocaleDateString()}</CardDescription>
+                <CardDescription className="text-[10px]">Emitido em {cert.created_at ? new Date(cert.created_at).toLocaleDateString('pt-BR') : (cert.issued_at ? new Date(cert.issued_at).toLocaleDateString('pt-BR') : 'Data não disponível')}</CardDescription>
               </CardHeader>
               <CardFooter className="p-4 pt-0">
                 <DownloadCertificate 
